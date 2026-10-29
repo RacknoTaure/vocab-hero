@@ -1,0 +1,725 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Vocab Hero V6</title>
+<style>
+:root{--ink:#14253a;--muted:#65768a;--nav:#102f4c;--gold:#e7b64b;--vio:#6658ed;--line:#d9e4e7;--good:#2b9b67;--bad:#d45665}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:ui-rounded,system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink);background:linear-gradient(180deg,#cfe4f2 0 30%,#deeadf 68%,#c6ddc5 100%);background-attachment:fixed}button,input{font:inherit}.wrap{width:min(1120px,100%);min-height:100vh;margin:auto;padding:10px 14px 24px;background:rgba(246,250,249,.92);box-shadow:0 0 44px #18384a22}.top{height:56px;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 12px;color:#fff;background:linear-gradient(135deg,#0e2b47,#194e72);border:2px solid #dcb45b;border-radius:16px;box-shadow:0 5px 0 #092037;margin-bottom:9px}.brand{font-size:21px;font-weight:950}.topStats{display:flex;gap:6px}.pill{padding:6px 9px;border-radius:999px;background:#ffffff18;border:1px solid #ffffff2d;font-size:12px;font-weight:900}.screen{display:none}.screen.on{display:block}.nav{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin:6px 0 10px}.navBtn{min-height:54px;padding:6px;border:1px solid #ccdbe0;border-radius:14px;background:#fff;box-shadow:0 4px 11px #15384912;cursor:pointer;color:var(--ink);font-weight:900}.navBtn .ico{font-size:20px;display:block}.navBtn small{display:block;color:var(--muted);font-size:9px;margin-top:1px}.section{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:15px;font-weight:950;margin:8px 2px}.section small{font-size:11px;color:var(--muted)}.units{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.unit{position:relative;min-height:94px;border:1px solid #ccdadd;border-radius:16px;background:#fff;box-shadow:0 4px 12px #12394b12;overflow:hidden;cursor:pointer}.unit.locked{background:#e8edef;color:#64747d}.unit.mid{background:#fff4c9}.unit.good{background:#e8f7e9}.unit.mastered{background:#dcf5e5;border-color:#77bf91}.unitBody{padding:8px;height:100%;display:flex;flex-direction:column;justify-content:space-between}.unitTop{display:flex;justify-content:space-between;align-items:center}.unitEmoji{font-size:23px}.unitNo{font-size:10px;font-weight:950;background:#ffffffbb;border-radius:999px;padding:2px 6px}.worldName{font-size:13px;font-weight:950;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.unitBar{height:7px;border-radius:99px;background:#0001;overflow:hidden;margin-top:6px}.unitBar i{display:block;height:100%;background:linear-gradient(90deg,#6658ed,#efbd54)}.unitMeta{display:flex;justify-content:space-between;font-size:8px;font-weight:900;color:#4f6677;margin-top:3px}.fightButtons{display:flex;gap:4px;margin-top:5px}.miniFight{border:0;border-radius:8px;padding:3px 5px;font-size:8px;font-weight:950;cursor:pointer;background:#173a58;color:white}.miniFight.boss{background:#762c8e}.miniFight:disabled{opacity:.35}.panel{background:#fff;border:1px solid var(--line);border-radius:17px;padding:13px;box-shadow:0 7px 18px #12384b12;margin:8px 0}.back{border:0;background:none;color:#4b51c8;font-weight:900;padding:5px 0 9px;cursor:pointer}.row{display:flex;justify-content:space-between;align-items:center;gap:9px;padding:9px 0;border-bottom:1px solid #edf1f2}.row:last-child{border:0}.note{font-size:12px;color:var(--muted)}
+/* battle */
+.battleLayout{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(360px,.95fr);gap:10px;align-items:start}.battleSide{min-width:0}.hud{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;background:linear-gradient(135deg,#102f4c,#194e6c);border:2px solid #ddb55a;border-radius:15px;padding:8px 10px;color:#fff;box-shadow:0 4px 0 #092137;margin-bottom:8px}.heroMini{display:flex;align-items:center;gap:8px}.avatarMini{font-size:27px}.xpbar,.hpbar{height:7px;background:#ffffff24;border-radius:99px;overflow:hidden}.xpfill{height:100%;background:linear-gradient(90deg,#55d88d,#e8c65c)}.arena{position:relative;min-height:270px;border:3px solid #6a4b2c;border-radius:18px;overflow:hidden;background:linear-gradient(180deg,#b8dff3 0 45%,#b5d994 46%,#8fc174 100%);box-shadow:0 6px 0 #53391e,0 11px 20px #0002}.arena:after{content:"";position:absolute;left:0;right:0;bottom:0;height:28%;background:radial-gradient(ellipse at center,#6da65d55,transparent 66%)}.battleStage{position:relative;z-index:2;display:grid;grid-template-columns:1fr .8fr 1fr;align-items:end;height:270px;padding:12px}.charZone,.enemyZone{text-align:center;position:relative}.heroStack{position:relative;display:inline-block}.hero{font-size:74px;line-height:1;filter:drop-shadow(0 4px 2px #0003)}.weaponVisual{position:absolute;font-size:44px;right:-32px;bottom:7px;transform:rotate(-25deg);filter:drop-shadow(0 3px 2px #0004)}.companionVisual{position:absolute;font-size:36px;left:-40px;bottom:2px;filter:drop-shadow(0 3px 2px #0003)}.aura{position:absolute;inset:-10px;border-radius:50%;opacity:.35;filter:blur(6px);z-index:-1}.enemy{font-size:72px;filter:drop-shadow(0 4px 2px #0003)}.nameplate{font-size:11px;font-weight:950;background:#ffffffc9;border-radius:999px;padding:3px 7px;display:inline-block}.enemyHp{height:11px;background:#173044;border:2px solid #fff;border-radius:99px;overflow:hidden;margin-bottom:5px}.enemyHp i{display:block;height:100%;background:linear-gradient(90deg,#ff514a,#ffae43);transition:.25s width}.centerHud{text-align:center;align-self:center}.battleMsg{display:inline-block;max-width:220px;background:#12314e;color:#fff;border-radius:999px;padding:6px 9px;font-size:10px;font-weight:900}.power{font-size:11px;font-weight:950;margin-top:6px}.fx{position:absolute;z-index:5;pointer-events:none;font-size:62px;left:47%;top:35%;opacity:0}.fx.go{animation:fxFly .55s ease-out}@keyframes fxFly{0%{opacity:0;transform:translate(-80px,30px) scale(.4) rotate(-25deg)}35%{opacity:1}100%{opacity:0;transform:translate(125px,-10px) scale(1.5) rotate(25deg)}}.heroAttack{animation:heroAttack .35s}.enemyHit{animation:enemyHit .35s}@keyframes heroAttack{50%{transform:translateX(22px) scale(1.06)}}@keyframes enemyHit{50%{transform:translateX(10px) rotate(8deg)}}
+.questionCard{background:#fffdf6;border:2px solid #d9c58c;border-radius:18px;padding:15px;box-shadow:0 6px 16px #0001}.meta{display:flex;justify-content:space-between;gap:8px;font-size:10px;color:var(--muted);font-weight:800}.progress{height:7px;border-radius:99px;background:#e9e6dc;overflow:hidden;margin-top:7px}.progress i{display:block;height:100%;background:linear-gradient(90deg,#6658ed,#a086ff)}.direction{display:inline-block;margin-top:10px;padding:5px 8px;background:#eeebff;color:#4c3cc6;border-radius:999px;font-size:11px;font-weight:950}.word{font-size:31px;line-height:1.05;font-weight:950;margin:11px 0 4px}.prompt{font-size:12px;color:var(--muted);margin-bottom:9px}.answer{width:100%;border:2px solid #d9e1e4;border-radius:13px;padding:11px 12px;font-size:18px;outline:0}.answer:focus{border-color:#7669ed}.primary{width:100%;border:0;border-radius:13px;background:linear-gradient(180deg,#7367f0,#5749d7);color:#fff;padding:11px;margin-top:7px;font-weight:950;box-shadow:0 4px 0 #3e34a6;cursor:pointer}.feedback{display:none;margin-top:8px;border-radius:12px;padding:9px;font-size:12px;line-height:1.35}.feedback.ok{display:block;background:#e8f8ef;color:#176743}.feedback.near{display:block;background:#fff3d8;color:#815700}.feedback.bad{display:block;background:#ffeaee;color:#9c3141}.battleStats{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:7px}.bstat{background:#fff;border:1px solid var(--line);border-radius:11px;text-align:center;padding:5px}.bstat b{display:block;font-size:14px}.bstat small{font-size:8px;color:var(--muted)}
+/* shop */
+.shopHead{display:flex;justify-content:space-between;align-items:center;gap:8px}.unitTabs{display:flex;gap:4px;overflow-x:auto;padding:6px 0 9px}.unitTab{flex:0 0 auto;border:1px solid #d2dde1;background:#fff;border-radius:999px;padding:5px 8px;font-size:10px;font-weight:900;cursor:pointer}.unitTab.sel{background:#173b58;color:#fff}.shopGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.shopItem{background:#fff;border:1px solid var(--line);border-radius:15px;padding:10px;min-height:146px;display:flex;flex-direction:column;justify-content:space-between}.shopIcon{font-size:29px}.shopItem h3{font-size:13px;margin:4px 0 3px}.shopItem p{font-size:10px;color:var(--muted);margin:0}.req{font-size:9px;margin-top:5px;color:#7b5b26}.buy{border:0;border-radius:10px;padding:7px;background:#173b58;color:#fff;font-size:10px;font-weight:950;cursor:pointer}.buy.owned{background:#e7f6ed;color:#23704c}.buy:disabled{background:#d9e0e3;color:#75828b}.inventoryLine{font-size:10px;color:var(--muted)}
+.overlay{position:fixed;inset:0;z-index:50;background:#0b2039bb;display:none;align-items:center;justify-content:center;padding:18px}.overlay.show{display:flex}.result{width:min(440px,100%);background:#fff;border:3px solid #e1b75b;border-radius:22px;padding:20px;text-align:center;box-shadow:0 20px 60px #0005}.result h2{margin:0 0 8px}.rewardLine{font-size:20px;font-weight:950;margin:9px 0}.result button{border:0;border-radius:12px;padding:10px 18px;background:#5749d7;color:#fff;font-weight:950;cursor:pointer}
+@media(max-width:850px){.battleLayout{grid-template-columns:1fr}.arena{min-height:170px}.battleStage{height:170px}.hero,.enemy{font-size:52px}.weaponVisual{font-size:32px;right:-25px}.companionVisual{font-size:28px;left:-30px}.questionCard{padding:12px}.word{font-size:27px}.shopGrid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.wrap{padding:7px 7px 16px}.top{height:48px;padding:6px 8px;margin-bottom:6px}.brand{font-size:17px}.topStats .pill:first-child{display:none}.nav{grid-template-columns:repeat(5,1fr);gap:4px;margin-bottom:7px}.navBtn{min-height:46px;padding:4px 2px;border-radius:11px;font-size:9px}.navBtn .ico{font-size:18px}.navBtn small{display:none}.units{grid-template-columns:repeat(3,1fr);gap:5px}.unit{min-height:72px;border-radius:12px}.unitBody{padding:6px}.unitEmoji{font-size:20px}.unitNo{font-size:9px}.worldName{display:none}.unitMeta{font-size:7px}.unitMeta .wide{display:none}.fightButtons{margin-top:3px}.miniFight{font-size:7px;padding:2px 4px}.hud{padding:6px 7px}.hud .gearText{display:none}.battleStats{margin-bottom:5px}.arena{border-width:2px}.battleStage{grid-template-columns:.9fr .9fr .9fr;padding:8px}.centerHud .power{display:none}.battleMsg{font-size:8px;padding:4px 6px}.shopGrid{grid-template-columns:1fr 1fr}.shopItem{min-height:132px;padding:8px}.shopIcon{font-size:25px}.shopItem h3{font-size:12px}}
+
+/* V6 world landscapes */
+.arena.world-1{background-image:linear-gradient(rgba(255,255,255,.08),rgba(18,35,52,.05)),url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20800%20300%22%3E%3Crect%20width%3D%22800%22%20height%3D%22300%22%20fill%3D%22%239ed7f7%22%2F%3E%0A%3Ccircle%20cx%3D%22720%22%20cy%3D%2275%22%20r%3D%2242%22%20fill%3D%22%23ffd866%22%2F%3E%3Cpath%20d%3D%22M0%20185%20L130%2080%20245%20185%20365%2095%20500%20185%22%20fill%3D%22%2386a9b0%22%2F%3E%0A%3Cg%20fill%3D%22%232f7b43%22%3E%3Cpolygon%20points%3D%2270%2C190%20120%2C75%20170%2C190%22%2F%3E%3Cpolygon%20points%3D%22145%2C190%20195%2C55%20245%2C190%22%2F%3E%3Cpolygon%20points%3D%22635%2C190%20680%2C80%20725%2C190%22%2F%3E%3Cpolygon%20points%3D%22700%2C190%20750%2C60%20800%2C190%22%2F%3E%3C%2Fg%3E%0A%3Cpath%20d%3D%22M0%20190%20Q220%20165%20400%20192%20T800%20188%20V300%20H0Z%22%20fill%3D%22%236ab15a%22%2F%3E%3Cpath%20d%3D%22M310%20300%20Q370%20215%20435%20190%20Q500%20220%20555%20300%22%20fill%3D%22%23d4b37c%22%2F%3E%3C%2Fsvg%3E");background-size:cover;background-position:center}
+.arena.world-2{background-image:linear-gradient(rgba(255,255,255,.08),rgba(18,35,52,.05)),url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20800%20300%22%3E%3Crect%20width%3D%22800%22%20height%3D%22300%22%20fill%3D%22%23b9def4%22%2F%3E%0A%3Cpath%20d%3D%22M0%20190%20Q170%20135%20340%20190%20T800%20180%20V300%20H0Z%22%20fill%3D%22%2382bd6d%22%2F%3E%3Cg%20stroke%3D%22%238b5b35%22%20stroke-width%3D%227%22%3E%3Cpath%20d%3D%22M0%20225H800%22%2F%3E%3Cpath%20d%3D%22M45%20190V270M130%20190V270M215%20190V270M300%20190V270M385%20190V270M470%20190V270M555%20190V270M640%20190V270M725%20190V270%22%2F%3E%3C%2Fg%3E%0A%3Cg%20fill%3D%22%233d884e%22%3E%3Ccircle%20cx%3D%22100%22%20cy%3D%22105%22%20r%3D%2238%22%2F%3E%3Crect%20x%3D%2291%22%20y%3D%22105%22%20width%3D%2218%22%20height%3D%2290%22%2F%3E%3Ccircle%20cx%3D%22690%22%20cy%3D%22105%22%20r%3D%2242%22%2F%3E%3Crect%20x%3D%22681%22%20y%3D%22105%22%20width%3D%2218%22%20height%3D%2290%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");background-size:cover;background-position:center}
+.arena.world-3{background-image:linear-gradient(rgba(255,255,255,.08),rgba(18,35,52,.05)),url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20800%20300%22%3E%3Crect%20width%3D%22800%22%20height%3D%22300%22%20fill%3D%22%2387ccef%22%2F%3E%0A%3Ccircle%20cx%3D%22680%22%20cy%3D%2270%22%20r%3D%2238%22%20fill%3D%22%23ffd66e%22%2F%3E%3Cpath%20d%3D%22M0%20175H800V300H0Z%22%20fill%3D%22%233d9fc2%22%2F%3E%3Cpath%20d%3D%22M0%20175%20Q80%20160%20160%20175%20T320%20175%20T480%20175%20T640%20175%20T800%20175%22%20fill%3D%22none%22%20stroke%3D%22%23d7f4ff%22%20stroke-width%3D%226%22%2F%3E%0A%3Cpath%20d%3D%22M510%20165%20l95%20-15%20-20%2035%20h-95z%22%20fill%3D%22%236e4526%22%2F%3E%3Crect%20x%3D%22548%22%20y%3D%2280%22%20width%3D%227%22%20height%3D%2280%22%20fill%3D%22%2350321d%22%2F%3E%3Cpath%20d%3D%22M555%2085%20L555%20145%20L620%20145Z%22%20fill%3D%22%23f4eee1%22%2F%3E%3Cpath%20d%3D%22M90%20210%20q55%20-45%20110%200%22%20fill%3D%22%23d6b06a%22%2F%3E%3Cpath%20d%3D%22M135%20205%20v-70%22%20stroke%3D%22%236b4a25%22%20stroke-width%3D%228%22%2F%3E%3Cpath%20d%3D%22M135%20140%20q-55%2010%20-65%2045%20q45%20-5%2065%20-45%22%20fill%3D%22%233a9453%22%2F%3E%3Cpath%20d%3D%22M135%20140%20q55%208%2065%2043%20q-45%20-3%20-65%20-43%22%20fill%3D%22%233a9453%22%2F%3E%3C%2Fsvg%3E");background-size:cover;background-position:center}
+.arena.world-4{background-image:linear-gradient(rgba(255,255,255,.08),rgba(18,35,52,.05)),url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20800%20300%22%3E%3Crect%20width%3D%22800%22%20height%3D%22300%22%20fill%3D%22%2354224e%22%2F%3E%0A%3Crect%20width%3D%22800%22%20height%3D%22300%22%20fill%3D%22%2327152f%22%2F%3E%3Cpath%20d%3D%22M0%200%20H150%20L105%20300%20H0Z%22%20fill%3D%22%238b2442%22%2F%3E%3Cpath%20d%3D%22M800%200%20H650%20L695%20300%20H800Z%22%20fill%3D%22%238b2442%22%2F%3E%3Cpath%20d%3D%22M150%200%20H650%20L610%2045%20H190Z%22%20fill%3D%22%23b0344f%22%2F%3E%0A%3Ccircle%20cx%3D%22280%22%20cy%3D%2238%22%20r%3D%2212%22%20fill%3D%22%23fff0ad%22%2F%3E%3Ccircle%20cx%3D%22400%22%20cy%3D%2238%22%20r%3D%2212%22%20fill%3D%22%23fff0ad%22%2F%3E%3Ccircle%20cx%3D%22520%22%20cy%3D%2238%22%20r%3D%2212%22%20fill%3D%22%23fff0ad%22%2F%3E%3Cpath%20d%3D%22M0%20245H800V300H0Z%22%20fill%3D%22%23a06a42%22%2F%3E%3C%2Fsvg%3E");background-size:cover;background-position:center}
+.arena.world-5{background-image:linear-gradient(rgba(255,255,255,.08),rgba(18,35,52,.05)),url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20800%20300%22%3E%3Crect%20width%3D%22800%22%20height%3D%22300%22%20fill%3D%22%238fd6f4%22%2F%3E%0A%3Ccircle%20cx%3D%22690%22%20cy%3D%2265%22%20r%3D%2238%22%20fill%3D%22%23ffd66e%22%2F%3E%3Cpath%20d%3D%22M0%20165H800V300H0Z%22%20fill%3D%22%2357b2ca%22%2F%3E%3Cpath%20d%3D%22M0%20225%20Q150%20195%20310%20225%20T620%20220%20T800%20230%20V300%20H0Z%22%20fill%3D%22%23e4ca83%22%2F%3E%0A%3Crect%20x%3D%2295%22%20y%3D%22120%22%20width%3D%22180%22%20height%3D%2290%22%20rx%3D%228%22%20fill%3D%22%23473c5f%22%2F%3E%3Cpath%20d%3D%22M115%20135H255%22%20stroke%3D%22%237f69dd%22%20stroke-width%3D%227%22%2F%3E%3Ccircle%20cx%3D%22135%22%20cy%3D%22180%22%20r%3D%2218%22%20fill%3D%22%23ee6767%22%2F%3E%3Ccircle%20cx%3D%22225%22%20cy%3D%22180%22%20r%3D%2218%22%20fill%3D%22%2362d6a4%22%2F%3E%3Cpath%20d%3D%22M410%2080%20q15%20-20%2030%200%20v55%22%20fill%3D%22none%22%20stroke%3D%22%235b3f77%22%20stroke-width%3D%228%22%2F%3E%3Ccircle%20cx%3D%22405%22%20cy%3D%22140%22%20r%3D%2216%22%20fill%3D%22%235b3f77%22%2F%3E%3C%2Fsvg%3E");background-size:cover;background-position:center}
+.arena.world-6{background-image:linear-gradient(rgba(255,255,255,.08),rgba(18,35,52,.05)),url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20800%20300%22%3E%3Crect%20width%3D%22800%22%20height%3D%22300%22%20fill%3D%22%23493a6c%22%2F%3E%0A%3Crect%20width%3D%22800%22%20height%3D%22300%22%20fill%3D%22%232e2448%22%2F%3E%3Crect%20x%3D%2260%22%20y%3D%2265%22%20width%3D%22250%22%20height%3D%22170%22%20rx%3D%2210%22%20fill%3D%22%23533c73%22%2F%3E%3Cg%20fill%3D%22%23c99dff%22%3E%3Crect%20x%3D%2288%22%20y%3D%2290%22%20width%3D%2248%22%20height%3D%2270%22%20rx%3D%228%22%2F%3E%3Crect%20x%3D%22160%22%20y%3D%22112%22%20width%3D%2245%22%20height%3D%2248%22%20rx%3D%228%22%2F%3E%3Crect%20x%3D%22230%22%20y%3D%2282%22%20width%3D%2245%22%20height%3D%2278%22%20rx%3D%228%22%2F%3E%3C%2Fg%3E%0A%3Cg%20fill%3D%22%2373e0cf%22%3E%3Ccircle%20cx%3D%22112%22%20cy%3D%22102%22%20r%3D%2210%22%2F%3E%3Ccircle%20cx%3D%22183%22%20cy%3D%22124%22%20r%3D%229%22%2F%3E%3Ccircle%20cx%3D%22253%22%20cy%3D%2295%22%20r%3D%2210%22%2F%3E%3C%2Fg%3E%3Cpath%20d%3D%22M0%20235H800V300H0Z%22%20fill%3D%22%234f3a69%22%2F%3E%0A%3Cpath%20d%3D%22M520%20210%20l40%20-105%20h40%20l40%20105z%22%20fill%3D%22%2389d3ff%22%20opacity%3D%22.75%22%2F%3E%3Ccircle%20cx%3D%22580%22%20cy%3D%2288%22%20r%3D%2224%22%20fill%3D%22%23ff75d8%22%20opacity%3D%22.75%22%2F%3E%3C%2Fsvg%3E");background-size:cover;background-position:center}
+.arena.world-7{background-image:linear-gradient(rgba(255,255,255,.08),rgba(18,35,52,.05)),url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20800%20300%22%3E%3Crect%20width%3D%22800%22%20height%3D%22300%22%20fill%3D%22%23a7d8f4%22%2F%3E%0A%3Cpath%20d%3D%22M0%20190%20Q180%20150%20360%20190%20T800%20180%20V300%20H0Z%22%20fill%3D%22%2379b467%22%2F%3E%3Cg%3E%3Crect%20x%3D%22100%22%20y%3D%22120%22%20width%3D%22130%22%20height%3D%2295%22%20fill%3D%22%23f2d39b%22%2F%3E%3Cpolygon%20points%3D%2280%2C125%20165%2C65%20250%2C125%22%20fill%3D%22%23a94d3f%22%2F%3E%3Crect%20x%3D%22150%22%20y%3D%22165%22%20width%3D%2235%22%20height%3D%2250%22%20fill%3D%22%237b5133%22%2F%3E%3Crect%20x%3D%22350%22%20y%3D%22130%22%20width%3D%22150%22%20height%3D%2285%22%20fill%3D%22%23ead8aa%22%2F%3E%3Cpolygon%20points%3D%22330%2C135%20425%2C75%20520%2C135%22%20fill%3D%22%236f7549%22%2F%3E%3C%2Fg%3E%3Cpath%20d%3D%22M580%20300%20Q610%20220%20675%20190%20Q730%20225%20760%20300%22%20fill%3D%22%23cbb38a%22%2F%3E%3C%2Fsvg%3E");background-size:cover;background-position:center}
+.arena.world-8{background-image:linear-gradient(rgba(255,255,255,.08),rgba(18,35,52,.05)),url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20800%20300%22%3E%3Crect%20width%3D%22800%22%20height%3D%22300%22%20fill%3D%22%239fd1ed%22%2F%3E%0A%3Cpath%20d%3D%22M0%20185%20Q170%20130%20340%20185%20T800%20170%20V300%20H0Z%22%20fill%3D%22%2378b265%22%2F%3E%3Crect%20x%3D%2290%22%20y%3D%22100%22%20width%3D%22180%22%20height%3D%22125%22%20fill%3D%22%23bc493d%22%2F%3E%3Cpolygon%20points%3D%2270%2C110%20180%2C45%20290%2C110%22%20fill%3D%22%236e352c%22%2F%3E%3Crect%20x%3D%22145%22%20y%3D%22155%22%20width%3D%2270%22%20height%3D%2270%22%20fill%3D%22%236e352c%22%2F%3E%0A%3Cg%20stroke%3D%22%2385562f%22%20stroke-width%3D%227%22%3E%3Cpath%20d%3D%22M350%20215H780%22%2F%3E%3Cpath%20d%3D%22M390%20170V255M490%20170V255M590%20170V255M690%20170V255%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");background-size:cover;background-position:center}
+.arena.world-9{background-image:linear-gradient(rgba(255,255,255,.08),rgba(18,35,52,.05)),url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20800%20300%22%3E%3Crect%20width%3D%22800%22%20height%3D%22300%22%20fill%3D%22%23b4ddf4%22%2F%3E%0A%3Cpath%20d%3D%22M0%20190%20Q150%20145%20300%20190%20T600%20185%20T800%20175%20V300%20H0Z%22%20fill%3D%22%2380b970%22%2F%3E%3Cg%20fill%3D%22%23f3d4a5%22%3E%3Crect%20x%3D%2290%22%20y%3D%22125%22%20width%3D%22120%22%20height%3D%2285%22%2F%3E%3Cpolygon%20points%3D%2275%2C130%20150%2C75%20225%2C130%22%20fill%3D%22%23b65d51%22%2F%3E%3Crect%20x%3D%22555%22%20y%3D%22125%22%20width%3D%22130%22%20height%3D%2290%22%2F%3E%3Cpolygon%20points%3D%22540%2C130%20620%2C70%20700%2C130%22%20fill%3D%22%23657e9b%22%2F%3E%3C%2Fg%3E%0A%3Cpath%20d%3D%22M315%20225%20h130%20v75%20h-130z%22%20fill%3D%22%239d6337%22%2F%3E%3Cpath%20d%3D%22M315%20225%20l65%20-55%2065%2055%22%20fill%3D%22%237b472a%22%2F%3E%3Cpath%20d%3D%22M355%20300v-42%20q25%20-35%2050%200v42%22%20fill%3D%22%234b3326%22%2F%3E%3C%2Fsvg%3E");background-size:cover;background-position:center}
+.arena.world-10{background-image:linear-gradient(rgba(255,255,255,.08),rgba(18,35,52,.05)),url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20800%20300%22%3E%3Crect%20width%3D%22800%22%20height%3D%22300%22%20fill%3D%22%23f1c77d%22%2F%3E%0A%3Cpath%20d%3D%22M0%20220H800V300H0Z%22%20fill%3D%22%23c89454%22%2F%3E%3Cg%3E%3Crect%20x%3D%2245%22%20y%3D%22120%22%20width%3D%22150%22%20height%3D%22105%22%20fill%3D%22%23f1e0bd%22%2F%3E%3Cpath%20d%3D%22M35%20125H205L180%2082H60Z%22%20fill%3D%22%23db5e55%22%2F%3E%3Crect%20x%3D%22240%22%20y%3D%22125%22%20width%3D%22150%22%20height%3D%22100%22%20fill%3D%22%23ead6b2%22%2F%3E%3Cpath%20d%3D%22M230%20130H400L375%2088H255Z%22%20fill%3D%22%235c9acb%22%2F%3E%3Crect%20x%3D%22435%22%20y%3D%22118%22%20width%3D%22150%22%20height%3D%22107%22%20fill%3D%22%23efdfbd%22%2F%3E%3Cpath%20d%3D%22M425%20123H595L570%2080H450Z%22%20fill%3D%22%236eb377%22%2F%3E%3C%2Fg%3E%3Ccircle%20cx%3D%22690%22%20cy%3D%2290%22%20r%3D%2242%22%20fill%3D%22%23f7df85%22%2F%3E%3C%2Fsvg%3E");background-size:cover;background-position:center}
+.arena.world-11{background-image:linear-gradient(rgba(255,255,255,.08),rgba(18,35,52,.05)),url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20800%20300%22%3E%3Crect%20width%3D%22800%22%20height%3D%22300%22%20fill%3D%22%237d8fbd%22%2F%3E%0A%3Crect%20width%3D%22800%22%20height%3D%22300%22%20fill%3D%22%23526486%22%2F%3E%3Ccircle%20cx%3D%22680%22%20cy%3D%2262%22%20r%3D%2235%22%20fill%3D%22%23f8e7ae%22%2F%3E%3Cpath%20d%3D%22M0%20210%20Q160%20175%20320%20210%20T640%20205%20T800%20210%20V300%20H0Z%22%20fill%3D%22%2365765d%22%2F%3E%3Crect%20x%3D%22320%22%20y%3D%2265%22%20width%3D%22160%22%20height%3D%22190%22%20fill%3D%22%23695b52%22%2F%3E%3Cpolygon%20points%3D%22300%2C70%20400%2C15%20500%2C70%22%20fill%3D%22%23493e3a%22%2F%3E%3Ccircle%20cx%3D%22400%22%20cy%3D%22110%22%20r%3D%2242%22%20fill%3D%22%23e9e2c3%22%20stroke%3D%22%2340352f%22%20stroke-width%3D%228%22%2F%3E%3Cpath%20d%3D%22M400%20110V80M400%20110L430%20125%22%20stroke%3D%22%2340352f%22%20stroke-width%3D%227%22%2F%3E%3C%2Fsvg%3E");background-size:cover;background-position:center}
+.arena.world-12{background-image:linear-gradient(rgba(255,255,255,.08),rgba(18,35,52,.05)),url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20800%20300%22%3E%3Crect%20width%3D%22800%22%20height%3D%22300%22%20fill%3D%22%23b6d6ef%22%2F%3E%0A%3Cpath%20d%3D%22M0%20205%20Q160%20160%20330%20205%20T800%20190%20V300%20H0Z%22%20fill%3D%22%237aae6b%22%2F%3E%3Crect%20x%3D%22220%22%20y%3D%2295%22%20width%3D%22360%22%20height%3D%22145%22%20fill%3D%22%23d8c0a0%22%2F%3E%3Crect%20x%3D%22185%22%20y%3D%2270%22%20width%3D%2295%22%20height%3D%22170%22%20fill%3D%22%23cdb28d%22%2F%3E%3Crect%20x%3D%22520%22%20y%3D%2270%22%20width%3D%2295%22%20height%3D%22170%22%20fill%3D%22%23cdb28d%22%2F%3E%3Cpolygon%20points%3D%22180%2C72%20232%2C30%20285%2C72%22%20fill%3D%22%239f5c62%22%2F%3E%3Cpolygon%20points%3D%22515%2C72%20568%2C30%20620%2C72%22%20fill%3D%22%239f5c62%22%2F%3E%3Cg%20fill%3D%22%23ff7c9d%22%3E%3Ccircle%20cx%3D%2290%22%20cy%3D%2285%22%20r%3D%2218%22%2F%3E%3Ccircle%20cx%3D%22700%22%20cy%3D%2290%22%20r%3D%2217%22%2F%3E%3C%2Fg%3E%3Cpath%20d%3D%22M90%20103v70M700%20107v70%22%20stroke%3D%22%2387546c%22%20stroke-width%3D%223%22%2F%3E%3C%2Fsvg%3E");background-size:cover;background-position:center}
+.arena.world-13{background-image:linear-gradient(rgba(255,255,255,.08),rgba(18,35,52,.05)),url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20800%20300%22%3E%3Crect%20width%3D%22800%22%20height%3D%22300%22%20fill%3D%22%236c7f9d%22%2F%3E%0A%3Crect%20width%3D%22800%22%20height%3D%22300%22%20fill%3D%22%23586b86%22%2F%3E%3Cpath%20d%3D%22M0%20250%20L170%2070%20300%20250%20440%2085%20590%20250%20690%20120%20800%20250V300H0Z%22%20fill%3D%22%2395a4b5%22%2F%3E%3Cpath%20d%3D%22M120%20122%20l50%20-52%2048%2052%22%20fill%3D%22%23e9f4fa%22%2F%3E%3Cpath%20d%3D%22M398%20135%20l42%20-50%2045%2050%22%20fill%3D%22%23edf5f8%22%2F%3E%3Cpath%20d%3D%22M675%20150%20l16%20-55%2018%2030%2028%20-50%20-14%2063%22%20fill%3D%22none%22%20stroke%3D%22%23ffe863%22%20stroke-width%3D%2210%22%2F%3E%3Cpath%20d%3D%22M90%2045%20q75%20-55%20150%200%20q70%20-50%20140%200%22%20fill%3D%22%233e495b%22%2F%3E%3C%2Fsvg%3E");background-size:cover;background-position:center}
+.arena.world-14{background-image:linear-gradient(rgba(255,255,255,.08),rgba(18,35,52,.05)),url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20800%20300%22%3E%3Crect%20width%3D%22800%22%20height%3D%22300%22%20fill%3D%22%23263b52%22%2F%3E%0A%3Crect%20width%3D%22800%22%20height%3D%22300%22%20fill%3D%22%23183147%22%2F%3E%3Cpath%20d%3D%22M0%20215%20Q160%20175%20320%20215%20T640%20205%20T800%20215%20V300H0Z%22%20fill%3D%22%23255345%22%2F%3E%3Cg%20fill%3D%22%232f7461%22%3E%3Cpolygon%20points%3D%2260%2C220%20115%2C80%20170%2C220%22%2F%3E%3Cpolygon%20points%3D%22180%2C220%20240%2C55%20300%2C220%22%2F%3E%3Cpolygon%20points%3D%22610%2C220%20665%2C70%20720%2C220%22%2F%3E%3C%2Fg%3E%0A%3Cg%20fill%3D%22%234be4ff%22%3E%3Crect%20x%3D%22365%22%20y%3D%2275%22%20width%3D%22105%22%20height%3D%2265%22%20rx%3D%227%22%2F%3E%3Crect%20x%3D%22505%22%20y%3D%22130%22%20width%3D%2280%22%20height%3D%2250%22%20rx%3D%226%22%2F%3E%3C%2Fg%3E%3Cg%20fill%3D%22%23ff66de%22%3E%3Crect%20x%3D%22385%22%20y%3D%2293%22%20width%3D%2212%22%20height%3D%2212%22%2F%3E%3Crect%20x%3D%22412%22%20y%3D%22110%22%20width%3D%2210%22%20height%3D%2210%22%2F%3E%3Crect%20x%3D%22530%22%20y%3D%22145%22%20width%3D%2212%22%20height%3D%2212%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");background-size:cover;background-position:center}
+.arena.world-15{background-image:linear-gradient(rgba(255,255,255,.08),rgba(18,35,52,.05)),url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20800%20300%22%3E%3Crect%20width%3D%22800%22%20height%3D%22300%22%20fill%3D%22%238ed3f2%22%2F%3E%0A%3Ccircle%20cx%3D%22680%22%20cy%3D%2260%22%20r%3D%2240%22%20fill%3D%22%23ffe07c%22%2F%3E%3Cpath%20d%3D%22M0%20160H800V300H0Z%22%20fill%3D%22%234fb1d0%22%2F%3E%3Cpath%20d%3D%22M0%20225%20Q160%20190%20320%20220%20T650%20215%20T800%20230%20V300H0Z%22%20fill%3D%22%23e2c681%22%2F%3E%3Cpath%20d%3D%22M120%20220v-100%22%20stroke%3D%22%2379522f%22%20stroke-width%3D%229%22%2F%3E%3Cpath%20d%3D%22M120%20120%20q-60%205%20-78%2042%20q55%200%2078%20-42%22%20fill%3D%22%233f9b59%22%2F%3E%3Cpath%20d%3D%22M120%20120%20q58%203%2078%2040%20q-52%200%20-78%20-40%22%20fill%3D%22%233f9b59%22%2F%3E%3Cpath%20d%3D%22M470%2070%20l90%2018%20-90%2018%2015%20-18z%22%20fill%3D%22%23f4f5f7%22%2F%3E%3Cpath%20d%3D%22M520%2088%20l25%20-28%2018%205%20-10%2023%22%20fill%3D%22%23d3dce3%22%2F%3E%3C%2Fsvg%3E");background-size:cover;background-position:center}
+
+/* V6 round outcomes */
+.goldCoin{display:inline-block;width:13px;height:13px;border-radius:50%;vertical-align:-2px;margin-right:3px;background:radial-gradient(circle at 32% 28%,#fff7a8 0 16%,#ffd84a 17% 46%,#e5a51f 47% 72%,#9b650d 73% 100%);box-shadow:inset 0 0 0 1px #ffd85c,0 1px 2px #0004}
+.medalBadge{display:inline-flex;align-items:center;gap:2px;padding:1px 5px;border-radius:999px;background:#fff3bd;color:#74530b;font-size:9px;font-weight:950;border:1px solid #e7be54}
+.arena{background-size:cover;background-position:center}
+.arena:after{background:linear-gradient(180deg,transparent 0 48%,rgba(30,60,35,.10) 75%,rgba(22,39,28,.22) 100%)}
+.arena.shadowArrival{animation:arenaShake .7s ease}
+.arena.shadowArrival:before{content:"";position:absolute;inset:0;z-index:4;background:radial-gradient(circle at 78% 55%,rgba(92,42,130,.55),rgba(14,9,24,.62) 42%,transparent 72%);animation:shadowPulse .9s ease forwards;pointer-events:none}
+.enemy.shadowSpawn{animation:shadowSpawn .9s cubic-bezier(.2,.8,.2,1)}
+@keyframes arenaShake{20%{transform:translateX(-3px)}40%{transform:translateX(4px)}60%{transform:translateX(-2px)}80%{transform:translateX(2px)}}
+@keyframes shadowPulse{0%{opacity:0}35%{opacity:1}100%{opacity:0}}
+@keyframes shadowSpawn{0%{opacity:0;transform:scale(.2) rotate(-20deg);filter:blur(10px)}55%{opacity:1;transform:scale(1.35) rotate(6deg);filter:blur(0)}100%{transform:scale(1)}}
+.dangerText{color:#ffdf74!important;text-shadow:0 0 10px #ff6b4a}
+.resultActions{display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+.resultActions button{margin:0}
+.result .shopAction{background:#173b58}
+#resultOverlay.perfect{background:radial-gradient(circle at center,rgba(35,57,92,.55),rgba(7,20,38,.94))}
+#resultOverlay.perfect .result{position:relative;overflow:hidden;background:linear-gradient(180deg,#fff8cf,#fff);border-color:#efc44f}
+.dragonCelebrate{font-size:82px;animation:dragonBob 1.25s ease-in-out infinite alternate;filter:drop-shadow(0 7px 5px #0003)}
+@keyframes dragonBob{from{transform:translateY(3px) rotate(-3deg)}to{transform:translateY(-10px) rotate(3deg)}}
+.medalBig{font-size:52px;filter:drop-shadow(0 4px 4px #a06913aa);animation:medalPop .55s ease-out}
+@keyframes medalPop{0%{transform:scale(.2) rotate(-30deg)}75%{transform:scale(1.2) rotate(5deg)}100%{transform:scale(1)}}
+.fireworks{position:absolute;inset:0;pointer-events:none}
+.fireworks span{position:absolute;font-size:26px;animation:firework 1.35s ease-out infinite}
+.fireworks span:nth-child(1){left:8%;top:14%;animation-delay:.05s}.fireworks span:nth-child(2){left:82%;top:10%;animation-delay:.35s}.fireworks span:nth-child(3){left:15%;top:66%;animation-delay:.65s}.fireworks span:nth-child(4){left:78%;top:64%;animation-delay:.9s}.fireworks span:nth-child(5){left:50%;top:4%;animation-delay:.5s}
+@keyframes firework{0%{opacity:0;transform:scale(.2)}35%{opacity:1;transform:scale(1.4) rotate(35deg)}100%{opacity:0;transform:scale(2.2) rotate(90deg)}}
+.defeatTip{margin-top:10px;padding:10px;border-radius:12px;background:#eef4fa;color:#31506d;font-size:12px}
+.eliteIntro{font-weight:950;color:#6e2c90}
+@media(max-width:600px){.medalBadge{font-size:8px;padding:1px 4px}.dragonCelebrate{font-size:64px}}
+
+</style></head>
+<body><div class="wrap">
+<header class="top"><div class="brand">⚔️ Vocab Hero <small style="color:#f2d16d;font-size:9px">V6</small></div><div class="topStats"><span class="pill" id="topLevel">Level 1</span><span class="pill" id="topCoins">🪙 0</span><span class="pill" id="topPower">⚔️ 0</span></div></header>
+<main id="home" class="screen on">
+ <div class="nav">
+  <button class="navBtn" onclick="startReview()"><span class="ico">🔄</span> Arena<small>aktive Units</small></button>
+  <button class="navBtn" onclick="startProblems()"><span class="ico">🔥</span> Jagd<small>Problemwörter</small></button>
+  <button class="navBtn" onclick="showShop()"><span class="ico">🛒</span> Shop<small>Ausrüstung</small></button>
+  <button class="navBtn" onclick="showProgress()"><span class="ico">🏆</span> Fortschritt<small>Welten</small></button>
+  <button class="navBtn" onclick="showAdmin()"><span class="ico">⚙️</span> Verwaltung<small>Units</small></button>
+ </div>
+ <div class="section"><span>🗺️ Abenteuerwelten</span><small id="homeStatus"></small></div>
+ <div class="units" id="quickUnits"></div>
+</main>
+<main id="quiz" class="screen"><button class="back" onclick="finishQuiz(false)">← Kampf verlassen</button>
+ <div class="battleLayout"><div class="battleSide">
+  <div class="hud" id="battleHud"></div>
+  <div class="battleStats"><div class="bstat"><b id="streak">0</b><small>🔥 Serie</small></div><div class="bstat"><b id="roundCoins">0</b><small>🪙 gelernt</small></div><div class="bstat"><b id="qCount">0</b><small>Fragen</small></div></div>
+  <div class="arena" id="battleArena"><div id="attackFx" class="fx">⚔️</div><div class="battleStage">
+   <div class="charZone"><div class="heroStack" id="heroStack"><span id="heroAura" class="aura"></span><div class="hero" id="heroF">🧙‍♂️</div><div class="weaponVisual" id="weaponVisual">🗡️</div><div class="companionVisual" id="companionVisual"></div></div><div class="nameplate" id="heroName">Vocab Hero</div><div id="heroHp" style="font-size:11px;margin-top:4px"></div></div>
+   <div class="centerHud"><div class="battleMsg" id="battleMessage">⚔️ Bereit!</div><div class="power" id="battlePower"></div><div class="power" id="comboHint">🔥 Serien lösen automatisch Spezialattacken aus</div></div>
+   <div class="enemyZone"><div class="enemyHp"><i id="enemyHpFill" style="width:100%"></i></div><div class="enemy" id="enemyF">🟢</div><div class="nameplate" id="enemyName">Schleim</div></div>
+  </div></div>
+ </div><div class="questionCard">
+  <div class="meta"><span id="modeLabel"></span><span id="unitLabel"></span></div><div class="progress"><i id="questionBar" style="width:0"></i></div>
+  <div class="direction" id="direction"></div><div class="word" id="question"></div><div class="prompt" id="prompt"></div>
+  <input id="answer" class="answer" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Antwort eingeben …">
+  <button id="checkBtn" class="primary" onclick="checkAnswer()">Prüfen</button><div id="feedback" class="feedback"></div><button id="nextBtn" class="primary" style="display:none" onclick="nextQuestion()">Weiter →</button>
+ </div></div>
+</main>
+<main id="shop" class="screen"><button class="back" onclick="goHome()">← Zurück</button><div class="shopHead"><div><b>🛒 Helden-Shop</b><div class="note">Münzen gibt es nur für erstmals gelernte Wörter.</div></div><div><b id="shopCoins">🪙 0</b><div class="inventoryLine" id="shopMats"></div></div></div><div class="unitTabs" id="shopTabs"></div><div class="shopGrid" id="shopGrid"></div></main>
+<main id="progress" class="screen"><button class="back" onclick="goHome()">← Zurück</button><div class="section">🏆 Fortschritt</div><div id="progressContent"></div></main>
+<main id="admin" class="screen"><button class="back" onclick="goHome()">← Zurück</button><div class="section">⚙️ Verwaltung</div><div class="panel" id="adminContent"></div><button class="primary" onclick="resetAll()">Alles zurücksetzen</button></main>
+</div>
+<div class="overlay" id="resultOverlay"><div class="result" id="resultCard"><h2 id="resultTitle">Sieg!</h2><div id="resultBody"></div><div class="resultActions"><button id="resultContinue" onclick="closeResult()">Weiter</button><button id="resultShop" class="shopAction" style="display:none" onclick="openShopFromResult()">🛒 Zum Shop</button></div></div></div>
+<script>
+const VOCAB=[{"id":1,"unit":1,"en":"to give","example":"Give me your school bag.","de":"geben"},{"id":2,"unit":1,"en":"time","example":"It's time for school.","de":"Zeit"},{"id":3,"unit":1,"en":"to understand","example":"I understand the question.","de":"verstehen"},{"id":4,"unit":1,"en":"to write","example":"Write the numbers.","de":"schreiben"},{"id":5,"unit":1,"en":"to enjoy","example":"Enjoy the music.","de":"genießen"},{"id":6,"unit":1,"en":"to listen","example":"Listen to the song.","de":"zuhören"},{"id":7,"unit":1,"en":"to love","example":"I love blue. It's my favourite colour.","de":"lieben"},{"id":8,"unit":1,"en":"more","example":"I want more!","de":"mehr"},{"id":9,"unit":1,"en":"to read","example":"Read the text.","de":"lesen"},{"id":10,"unit":1,"en":"their","example":"What's their address?","de":"ihr/e"},{"id":11,"unit":1,"en":"to ask","example":"Can I ask you a question?","de":"fragen"},{"id":12,"unit":1,"en":"(email) address","example":"My email address is sara@linkways.com.","de":"(E-Mail-)Adresse"},{"id":13,"unit":1,"en":"How are you?","example":"","de":"Wie geht es dir/Ihnen/euch?"},{"id":14,"unit":1,"en":"I am (= I'm) fine.","example":"","de":"Es geht mir gut."},{"id":15,"unit":1,"en":"to meet","example":"Nice to meet you!","de":"kennenlernen; sich treffen"},{"id":16,"unit":1,"en":"then","example":"Listen to the dialogue. Then read it.","de":"dann, danach"},{"id":17,"unit":1,"en":"your","example":"What's your email address?","de":"dein/e; Ihr/e; euer/eure"},{"id":18,"unit":1,"en":"to look","example":"Look at the animals.","de":"sehen, schauen; Schau mal."},{"id":19,"unit":1,"en":"or","example":"Tick or correct the numbers.","de":"oder"},{"id":20,"unit":1,"en":"to eat","example":"I eat insects.","de":"essen; fressen"},{"id":21,"unit":1,"en":"to go","example":"I must go. Bye.","de":"gehen"},{"id":22,"unit":1,"en":"must","example":"I must go.","de":"müssen"},{"id":23,"unit":1,"en":"how many","example":"How many frogs can you see?","de":"wie viele"},{"id":24,"unit":1,"en":"to hate","example":"I hate pink.","de":"hassen, nicht ausstehen können"},{"id":25,"unit":1,"en":"here","example":"Here's your pencil case.","de":"hier"},{"id":26,"unit":1,"en":"it","example":"It's yellow.","de":"es"},{"id":27,"unit":1,"en":"Let's ...","example":"Let's sing a song!","de":"Lass(t) ..."},{"id":28,"unit":1,"en":"midnight","example":"It's twelve o'clock – midnight.","de":"Mitternacht"},{"id":29,"unit":1,"en":"our","example":"This is our school.","de":"unser/e"},{"id":30,"unit":1,"en":"favourite","example":"Green is my favourite colour.","de":"Lieblings-"},{"id":31,"unit":1,"en":"to find","example":"Can you find my school tie?","de":"finden"},{"id":32,"unit":1,"en":"light","example":"My favourite colour is light blue.","de":"hell"},{"id":33,"unit":1,"en":"child","example":"The child is in class 1A.","de":"Kind"},{"id":34,"unit":1,"en":"to clean","example":"Clean the board.","de":"sauber machen, putzen"},{"id":35,"unit":1,"en":"to close","example":"Close the door.","de":"schließen, zumachen"},{"id":36,"unit":1,"en":"to open","example":"Open the window.","de":"öffnen, aufmachen"},{"id":37,"unit":1,"en":"picture","example":"Look at the pictures.","de":"Bild"},{"id":38,"unit":1,"en":"to sit down","example":"Sit down, children.","de":"sich (hin-)setzen"},{"id":39,"unit":1,"en":"to speak","example":"Don't speak. Listen.","de":"sprechen"},{"id":40,"unit":1,"en":"to stand up","example":"Don't stand up. Sit down.","de":"aufstehen"},{"id":41,"unit":1,"en":"to take out","example":"Take out your books.","de":"herausnehmen"},{"id":42,"unit":1,"en":"class","example":"I'm in class 1A.","de":"(Schul-)Klasse"},{"id":43,"unit":2,"en":"zoo","example":"There are many animals in the zoo.","de":"Zoo"},{"id":44,"unit":2,"en":"beautiful","example":"The parrot is blue and yellow. It's beautiful.","de":"schön, hübsch"},{"id":45,"unit":2,"en":"behind","example":"The chair is behind the desk.","de":"hinter"},{"id":46,"unit":2,"en":"big","example":"There's a big giraffe.","de":"groß"},{"id":47,"unit":2,"en":"in front of","example":"The tree is in front of you.","de":"vor"},{"id":48,"unit":2,"en":"next to","example":"The parrot is next to the monkeys.","de":"neben"},{"id":49,"unit":2,"en":"now","example":"Where is it now?","de":"jetzt"},{"id":50,"unit":2,"en":"on","example":"Look! The parrot is on Buddy now.","de":"auf"},{"id":51,"unit":2,"en":"there is (there's)","example":"There's a book on my desk.","de":"es gibt, da ist"},{"id":52,"unit":2,"en":"there are","example":"There are three books on my desk.","de":"es gibt, da sind"},{"id":53,"unit":2,"en":"tree","example":"The monkeys are behind the tree.","de":"Baum"},{"id":54,"unit":2,"en":"under","example":"There's a book under my desk.","de":"unter"},{"id":55,"unit":2,"en":"What is it?","example":"","de":"Was ist los?"},{"id":56,"unit":2,"en":"where","example":"Where is it?","de":"wo"},{"id":57,"unit":2,"en":"small","example":"The monkey isn't big. It's small.","de":"klein"},{"id":58,"unit":2,"en":"adult","example":"Adults are £14.40.","de":"Erwachsene/r"},{"id":59,"unit":2,"en":"at","example":"The children are at the zoo.","de":"bei; an; hier: in"},{"id":60,"unit":2,"en":"to bring","example":"Can I bring my dog, Buddy?","de":"(mit-)bringen"},{"id":61,"unit":2,"en":"but","example":"Dogs are welcome. But they can't run around.","de":"aber"},{"id":62,"unit":2,"en":"to feed","example":"Let's go and feed the penguins.","de":"füttern"},{"id":63,"unit":2,"en":"guide","example":"Listen to the guide.","de":"(Reise-)Führer/in"},{"id":64,"unit":2,"en":"to run around","example":"Dogs are welcome, but they can't run around.","de":"herumlaufen"},{"id":65,"unit":2,"en":"train","example":"Let's go on a train.","de":"Zug"},{"id":66,"unit":2,"en":"to","example":"Welcome to the wildlife park!","de":"zu; bis; vor; hier: in"},{"id":67,"unit":2,"en":"welcome","example":"Welcome to London.","de":"willkommen"},{"id":68,"unit":2,"en":"from","example":"They are from California.","de":"aus"},{"id":69,"unit":2,"en":"year","example":"I'm in Year 7.","de":"Jahr; Jahrgangsstufe"},{"id":70,"unit":2,"en":"he","example":"He likes animals.","de":"er"},{"id":71,"unit":2,"en":"she","example":"She is from England.","de":"sie"},{"id":72,"unit":2,"en":"to talk","example":"Talk about the boys and girls.","de":"sprechen, sich unterhalten"},{"id":73,"unit":2,"en":"they","example":"Rahim and Sue are 11. They are from Manchester.","de":"sie"},{"id":74,"unit":2,"en":"we","example":"We're Sophie and John.","de":"wir"},{"id":75,"unit":2,"en":"for","example":"Here's a chant for you.","de":"für"},{"id":76,"unit":2,"en":"happy","example":"Buddy is happy.","de":"glücklich, fröhlich; zufrieden"},{"id":77,"unit":2,"en":"to let somebody out","example":"Let us out!","de":"jemanden herauslassen"},{"id":78,"unit":2,"en":"us","example":"Can you see us?","de":"uns"},{"id":79,"unit":2,"en":"car","example":"The parrot is in the car.","de":"Auto"},{"id":80,"unit":2,"en":"At last.","example":"","de":"Endlich."},{"id":81,"unit":2,"en":"How strange!","example":"","de":"Wie komisch!"},{"id":82,"unit":2,"en":"Let me see.","example":"","de":"Lass mich mal schauen."},{"id":83,"unit":2,"en":"stone","example":"Colour your stone.","de":"Stein"},{"id":84,"unit":3,"en":"also","example":"Tamara is also a pirate.","de":"auch"},{"id":85,"unit":3,"en":"famous","example":"Greybeard is a famous pirate.","de":"berühmt"},{"id":86,"unit":3,"en":"him","example":"Peter is nice. We like him.","de":"ihn/ihm"},{"id":87,"unit":3,"en":"his","example":"His pirate name is Blackbeard.","de":"sein/e"},{"id":88,"unit":3,"en":"ship","example":"Greybeard has got a big ship.","de":"Schiff"},{"id":89,"unit":3,"en":"to be scared (of)","example":"The kids are scared of the ship.","de":"Angst haben (vor)"},{"id":90,"unit":3,"en":"very","example":"They are very scared.","de":"sehr"},{"id":91,"unit":3,"en":"strong","example":"Greybeard hasn't got a strong left leg.","de":"stark, kräftig"},{"id":92,"unit":3,"en":"captain","example":"The captain has got a blue ship.","de":"Kapitän"},{"id":93,"unit":3,"en":"have got / has got","example":"I have got brown hair. Tamara has got red hair.","de":"haben"},{"id":94,"unit":3,"en":"pretty","example":"Polly is a pretty pirate.","de":"hübsch"},{"id":95,"unit":3,"en":"purple","example":"She has got purple hair.","de":"violett, lila"},{"id":96,"unit":3,"en":"a lot of / lots of","example":"She has got a lot of books about pirates.","de":"viel/e"},{"id":97,"unit":3,"en":"bed","example":"Dana is in bed now.","de":"Bett"},{"id":98,"unit":3,"en":"dream","example":"It's a dream!","de":"Traum"},{"id":99,"unit":3,"en":"tired","example":"Dana is in bed. She is tired.","de":"müde"},{"id":100,"unit":3,"en":"to guess","example":"Listen and guess the pirate.","de":"raten"},{"id":101,"unit":3,"en":"It's your turn.","example":"","de":"Du bist an der Reihe."},{"id":102,"unit":3,"en":"brother","example":"Fred is Frank's brother.","de":"Bruder"},{"id":103,"unit":3,"en":"blonde","example":"He has got blonde hair.","de":"blond"},{"id":104,"unit":3,"en":"real","example":"His left leg isn't real. It's wooden.","de":"echt, wirklich"},{"id":105,"unit":3,"en":"short","example":"Greybeard is short.","de":"klein"},{"id":106,"unit":3,"en":"tall","example":"Tamara is tall.","de":"groß"},{"id":107,"unit":3,"en":"wrong","example":"Say what's wrong.","de":"falsch, nicht in Ordnung"},{"id":108,"unit":3,"en":"Good idea.","example":"","de":"Gute Idee."},{"id":109,"unit":3,"en":"true","example":"Is it true?","de":"wahr"},{"id":110,"unit":4,"en":"after","example":"After school I meet my friends.","de":"nach"},{"id":111,"unit":4,"en":"day","example":"On the big day, Mike is nervous.","de":"Tag"},{"id":112,"unit":4,"en":"end","example":"At the end of the play, Mike is very happy.","de":"Ende"},{"id":113,"unit":4,"en":"fun","example":"It's great fun.","de":"Spaß"},{"id":114,"unit":4,"en":"Go away!","example":"","de":"Geh weg!"},{"id":115,"unit":4,"en":"to help","example":"Let me help you.","de":"helfen"},{"id":116,"unit":4,"en":"home","example":"Mike is at home.","de":"zu/nach Hause; Zuhause"},{"id":117,"unit":4,"en":"It's no good.","example":"","de":"Es hat keinen Zweck."},{"id":118,"unit":4,"en":"mum","example":"She is his mum.","de":"Mama, Mutti"},{"id":119,"unit":4,"en":"next","example":"The next day.","de":"nächster/nächste/nächstes"},{"id":120,"unit":4,"en":"still (not)","example":"Miss Baker still isn't happy.","de":"immer noch (nicht)"},{"id":121,"unit":4,"en":"a day in the life of","example":"The story is about a day in the life of Richard.","de":"ein Tag im Leben von"},{"id":122,"unit":4,"en":"to be asleep","example":"He's in bed and he's asleep.","de":"schlafen"},{"id":123,"unit":4,"en":"early","example":"It's early. He's still in bed.","de":"früh"},{"id":124,"unit":4,"en":"life (pl lives)","example":"Elephants have a long life.","de":"Leben"},{"id":125,"unit":4,"en":"lunchtime","example":"It's lunchtime. He's hungry.","de":"Mittagspause"},{"id":126,"unit":4,"en":"sun","example":"The sun is out.","de":"Sonne"},{"id":127,"unit":4,"en":"Are you OK?","example":"","de":"Geht's dir/euch/Ihnen gut?"},{"id":128,"unit":4,"en":"homework (no pl)","example":"We have got a lot of homework today.","de":"Hausaufgaben"},{"id":129,"unit":4,"en":"into","example":"Go into the classroom!","de":"in (... hinein)"},{"id":130,"unit":4,"en":"Oh dear!","example":"","de":"Du meine Güte!"},{"id":131,"unit":4,"en":"room","example":"There's a rat in our room.","de":"Zimmer, Raum"},{"id":132,"unit":4,"en":"why","example":"Why are you tired?","de":"warum"},{"id":133,"unit":4,"en":"bad","example":"Thursday and Friday aren't bad.","de":"schlecht, böse"},{"id":134,"unit":4,"en":"Don't be late.","example":"","de":"Komm(t) nicht zu spät., Sei(d) pünktlich."},{"id":135,"unit":4,"en":"tomorrow","example":"Tomorrow is Monday.","de":"morgen"},{"id":136,"unit":4,"en":"birthday","example":"Happy birthday, David!","de":"Geburtstag"},{"id":137,"unit":4,"en":"friend","example":"Tom is his friend.","de":"Freund/Freundin"},{"id":138,"unit":4,"en":"Be yourself.","example":"","de":"Sei du selbst."},{"id":139,"unit":4,"en":"no one else","example":"Be yourself and no one else.","de":"niemand anders"},{"id":140,"unit":4,"en":"bottle","example":"The feelings are in the bottle.","de":"Flasche"},{"id":141,"unit":4,"en":"to get back","example":"I will get the feelings back.","de":"zurückholen, zurückbekommen"},{"id":142,"unit":4,"en":"mad","example":"I am nice, Bob is mad.","de":"wütend, zornig"},{"id":143,"unit":4,"en":"magic","example":"This is a magic bottle.","de":"magisch"},{"id":144,"unit":4,"en":"to rob","example":"I'm a monster and I rob feelings.","de":"stehlen; ausrauben"},{"id":145,"unit":4,"en":"to break","example":"I must break the bottle.","de":"(zer-)brechen"},{"id":146,"unit":4,"en":"to go to sleep","example":"Go back to sleep.","de":"schlafen gehen"},{"id":147,"unit":4,"en":"because","example":"I'm happy because it's the weekend.","de":"weil"},{"id":148,"unit":4,"en":"It's me.","example":"","de":"Ich bin's."},{"id":149,"unit":4,"en":"Try it!","example":"","de":"Versuch es!"},{"id":150,"unit":4,"en":"Let go!","example":"","de":"Lass(t) los!"},{"id":151,"unit":4,"en":"What's happening?","example":"","de":"Was ist (hier) los?"},{"id":152,"unit":5,"en":"boyfriend","example":"Jack is her boyfriend.","de":"fester Freund"},{"id":153,"unit":5,"en":"its","example":"This is my band. Its name is Project 11.","de":"sein/e; ihr/e"},{"id":154,"unit":5,"en":"to play","example":"They play the guitar.","de":"spielen"},{"id":155,"unit":5,"en":"sister","example":"Jessica is my sister.","de":"Schwester"},{"id":156,"unit":5,"en":"can; cannot / can't","example":"She can play the drums. He can't sing.","de":"können; nicht können"},{"id":157,"unit":5,"en":"concert","example":"Let's go to the concert tomorrow.","de":"Konzert"},{"id":158,"unit":5,"en":"to dance","example":"Let's dance to the music!","de":"tanzen"},{"id":159,"unit":5,"en":"Don't worry.","example":"","de":"Keine Sorge."},{"id":160,"unit":5,"en":"job","example":"She has a good job.","de":"Arbeit; Aufgabe"},{"id":161,"unit":5,"en":"perfect","example":"The job is perfect for you.","de":"perfekt"},{"id":162,"unit":5,"en":"to carry","example":"Can you carry my guitar?","de":"tragen"},{"id":163,"unit":5,"en":"to stand on","example":"I can stand on my head.","de":"auf etwas stehen"},{"id":164,"unit":5,"en":"tongue","example":"He can touch his nose with his tongue.","de":"Zunge"},{"id":165,"unit":5,"en":"to touch","example":"Please don't touch my guitar.","de":"berühren"},{"id":166,"unit":5,"en":"to walk on","example":"Can you walk on your hands?","de":"auf etwas gehen"},{"id":167,"unit":5,"en":"to wiggle","example":"He can wiggle his ears.","de":"wackeln"},{"id":168,"unit":5,"en":"can","example":"Look, he carries fifteen cans.","de":"Dose"},{"id":169,"unit":5,"en":"to drink","example":"I can't drink fifteen cans.","de":"trinken"},{"id":170,"unit":5,"en":"hundred","example":"Can you eat a hundred apples?","de":"hundert"},{"id":171,"unit":5,"en":"in one go","example":"Can you drink five cans in one go?","de":"in einem Zug, auf einmal"},{"id":172,"unit":5,"en":"Is that so?","example":"","de":"Ach wirklich?"},{"id":173,"unit":5,"en":"This is me.","example":"","de":"Das bin ich."},{"id":174,"unit":5,"en":"economy","example":"The economy is the world of money.","de":"Wirtschaft"},{"id":175,"unit":5,"en":"hospital","example":"The Clown Doctors go to hospitals and help children.","de":"Krankenhaus"},{"id":176,"unit":5,"en":"to laugh","example":"They make children laugh.","de":"lachen"},{"id":177,"unit":5,"en":"(pocket) money","example":"I get my pocket money from my mum and dad.","de":"(Taschen-)Geld"},{"id":178,"unit":5,"en":"pound","example":"A cup of apple juice is 2 pounds.","de":"Pfund"},{"id":179,"unit":5,"en":"profit","example":"It's 120 pounds. That's my profit.","de":"Gewinn, Profit"},{"id":180,"unit":5,"en":"school canteen","example":"We have apple juice in our school canteen.","de":"Schulkantine"},{"id":181,"unit":5,"en":"table","example":"I put a table in our playground.","de":"Tisch"},{"id":182,"unit":5,"en":"teacher","example":"Mr Davis is my teacher at school.","de":"Lehrer/Lehrerin"},{"id":183,"unit":5,"en":"uncle","example":"My uncle is my dad's brother.","de":"Onkel"},{"id":184,"unit":5,"en":"to wash","example":"I wash my mum's car.","de":"waschen"},{"id":185,"unit":5,"en":"nothing","example":"There's nothing in the garden.","de":"nichts"},{"id":186,"unit":5,"en":"Sorry?","example":"","de":"Entschuldigung?, Wie bitte?"},{"id":187,"unit":6,"en":"to climb","example":"Sherlock Groans climbs up a tree.","de":"klettern"},{"id":188,"unit":6,"en":"to jump","example":"A bird jumps on Sherlock Groans' head.","de":"hüpfen"},{"id":189,"unit":6,"en":"to leave","example":"Doctor Grey leaves the office.","de":"verlassen, weggehen"},{"id":190,"unit":6,"en":"mirror","example":"There is a mirror on a wall.","de":"Spiegel"},{"id":191,"unit":6,"en":"to put on","example":"Sherlock puts his hat on.","de":"aufsetzen, anziehen"},{"id":192,"unit":6,"en":"to smile","example":"He smiles in the mirror.","de":"lächeln"},{"id":193,"unit":6,"en":"to take off","example":"He takes off his hat.","de":"abnehmen, ausziehen"},{"id":194,"unit":6,"en":"away","example":"Go away!","de":"weg"},{"id":195,"unit":6,"en":"(world's) best","example":"Sherlock Groans is the world's best detective!","de":"(welt-)bester/beste/bestes"},{"id":196,"unit":6,"en":"detective","example":"He's the world's best detective.","de":"Detektiv/Detektivin"},{"id":197,"unit":6,"en":"Help me!","example":"","de":"Hilf mir!"},{"id":198,"unit":6,"en":"to look for","example":"He looks for his hat in the park.","de":"suchen"},{"id":199,"unit":6,"en":"old","example":"His skateboard isn't new. It's very old.","de":"alt"},{"id":200,"unit":6,"en":"to pick up","example":"He picks up the hat.","de":"aufheben"},{"id":201,"unit":6,"en":"to run out (of)","example":"Sherlock runs out of the office.","de":"hinausrennen (aus)"},{"id":202,"unit":6,"en":"to run down (the street)","example":"Sherlock runs down the street.","de":"(die Straße) hinunterlaufen"},{"id":203,"unit":6,"en":"to find","example":"The dog finds Sherlock Groans.","de":"finden"},{"id":204,"unit":6,"en":"to pull","example":"The dog pulls Sherlock Groans out of the river.","de":"ziehen"},{"id":205,"unit":6,"en":"to catch","example":"He always catches the bad people.","de":"fangen; erwischen; festnehmen"},{"id":206,"unit":6,"en":"clever","example":"Sherlock is really clever.","de":"klug, schlau"},{"id":207,"unit":6,"en":"to come to","example":"He comes to a park.","de":"(zu etwas) hinkommen"},{"id":208,"unit":6,"en":"to live","example":"Peter lives in London.","de":"leben, wohnen"},{"id":209,"unit":6,"en":"pipe","example":"Sherlock often has a pipe in his mouth.","de":"Pfeife"},{"id":210,"unit":6,"en":"to smoke","example":"Groans smokes a pipe.","de":"rauchen"},{"id":211,"unit":6,"en":"violin","example":"He can play the violin.","de":"Geige"},{"id":212,"unit":6,"en":"to wear","example":"Trevor wears a black hat.","de":"tragen"},{"id":213,"unit":6,"en":"a lot of / lots of","example":"There are lots of beautiful trees in the park.","de":"viel/e, jede Menge"},{"id":214,"unit":6,"en":"to call","example":"Sherlock Groans calls Doctor Grey.","de":"(an-)rufen"},{"id":215,"unit":6,"en":"Come on!","example":"","de":"Komm(t) jetzt!, Mach(t) schon!"},{"id":216,"unit":6,"en":"to solve","example":"Detectives solve problems.","de":"lösen"},{"id":217,"unit":6,"en":"to wait","example":"But ... wait ... what's that?","de":"warten"},{"id":218,"unit":6,"en":"to watch","example":"He watches the people in the streets.","de":"beobachten, zuschauen"},{"id":219,"unit":6,"en":"street","example":"Anna lives in York Street.","de":"Straße"},{"id":220,"unit":6,"en":"to get up","example":"He gets up at 7 o'clock in the morning.","de":"aufstehen"},{"id":221,"unit":6,"en":"to become","example":"Emma becomes a tiger.","de":"werden"},{"id":222,"unit":6,"en":"But it's true!","example":"","de":"Aber es stimmt!"},{"id":223,"unit":6,"en":"Go on.","example":"","de":"weitermachen; Erzähl weiter!"},{"id":224,"unit":6,"en":"Well done.","example":"","de":"Gut gemacht."},{"id":225,"unit":7,"en":"meat","example":"I am vegetarian: I never eat meat.","de":"Fleisch"},{"id":226,"unit":7,"en":"ham","example":"On the weekend, I sometimes have ham and eggs for breakfast.","de":"Schinken"},{"id":227,"unit":7,"en":"healthy","example":"A lot of junk food isn't healthy.","de":"gesund"},{"id":228,"unit":7,"en":"to like","example":"I like orange juice.","de":"mögen"},{"id":229,"unit":7,"en":"That's nice.","example":"","de":"Das ist nett."},{"id":230,"unit":7,"en":"always","example":"They always have pizza for dinner.","de":"immer"},{"id":231,"unit":7,"en":"breakfast","example":"We have eggs for breakfast.","de":"Frühstück"},{"id":232,"unit":7,"en":"country","example":"My grandparents live in the country, but I live in the city.","de":"Land"},{"id":233,"unit":7,"en":"dessert","example":"For dessert, I like rice pudding.","de":"Nachtisch"},{"id":234,"unit":7,"en":"family","example":"My family and I live in Austria.","de":"Familie"},{"id":235,"unit":7,"en":"fruit","example":"He likes lots of fruit for breakfast.","de":"Obst; Frucht"},{"id":236,"unit":7,"en":"grandparents","example":"My grandparents live in the country.","de":"Großeltern"},{"id":237,"unit":7,"en":"lunch","example":"We often have curry for lunch.","de":"Mittagessen"},{"id":238,"unit":7,"en":"never","example":"She never eats meat. She's a vegetarian.","de":"nie, niemals"},{"id":239,"unit":7,"en":"often","example":"They often have bread for breakfast.","de":"oft, häufig"},{"id":240,"unit":7,"en":"to put","example":"We put fish and vegetables on the rice paper.","de":"setzen, legen, stellen"},{"id":241,"unit":7,"en":"sometimes","example":"We sometimes have fish for lunch.","de":"manchmal"},{"id":242,"unit":7,"en":"stew","example":"When we have vegetables (and meat) at home, my mum cooks a stew.","de":"Eintopf"},{"id":243,"unit":7,"en":"usually","example":"She usually has bread for breakfast.","de":"gewöhnlich, normalerweise"},{"id":244,"unit":7,"en":"vegetables (veggies)","example":"I like veggies, I mean vegetables.","de":"Gemüse"},{"id":245,"unit":7,"en":"best friend","example":"I like John best. He's my best friend.","de":"bester Freund / beste Freundin"},{"id":246,"unit":7,"en":"tofu","example":"I like meat, but sometimes I also eat tofu.","de":"Tofu"},{"id":247,"unit":7,"en":"beef","example":"I often eat chicken, but I really don't like beef.","de":"Rindfleisch"},{"id":248,"unit":7,"en":"I don't know.","example":"","de":"Ich weiß es nicht."},{"id":249,"unit":7,"en":"I'm not sure.","example":"","de":"Ich bin mir nicht sicher."},{"id":250,"unit":7,"en":"present","example":"The vase is a good present for Mum.","de":"Geschenk"},{"id":251,"unit":8,"en":"hole","example":"Have your jeans got holes in them?","de":"Loch"},{"id":252,"unit":8,"en":"anything","example":"Is there anything in the box?","de":"(irgend-)etwas"},{"id":253,"unit":8,"en":"to borrow","example":"Can I borrow your sweater tomorrow?","de":"(sich) ausleihen"},{"id":254,"unit":8,"en":"to fit","example":"These jeans don't fit.","de":"passen"},{"id":255,"unit":8,"en":"to try on","example":"Can I try these trousers on?","de":"anprobieren"},{"id":256,"unit":8,"en":"to hurt","example":"My head hurts!","de":"wehtun, schmerzen"},{"id":257,"unit":8,"en":"poem","example":"He likes to write poems.","de":"Gedicht"},{"id":258,"unit":8,"en":"to tickle","example":"Please don't tickle me!","de":"kitzeln"},{"id":259,"unit":8,"en":"somebody","example":"There's somebody behind the bushes.","de":"jemand"},{"id":260,"unit":8,"en":"backwards","example":"I can spell the word backwards too.","de":"rückwärts"},{"id":261,"unit":8,"en":"exciting","example":"It's a very exciting costume.","de":"aufregend"},{"id":262,"unit":8,"en":"tonight","example":"They all want to win the big prize tonight.","de":"heute Abend"},{"id":263,"unit":8,"en":"horse","example":"She rides her horse at weekends.","de":"Pferd"},{"id":264,"unit":8,"en":"building","example":"The children go into the building.","de":"Gebäude"},{"id":265,"unit":8,"en":"Let's get out of here.","example":"","de":"Lass(t) uns verschwinden."},{"id":266,"unit":9,"en":"unusual","example":"A snake is a very unusual pet.","de":"ungewöhnlich, außergewöhnlich"},{"id":267,"unit":9,"en":"mouse (pl mice)","example":"I have a mouse and a dog and my friend has four mice.","de":"Maus"},{"id":268,"unit":9,"en":"(...) a day","example":"She walks her dog three times a day.","de":"(...) am Tag"},{"id":269,"unit":9,"en":"once","example":"He feeds his hamster once a day.","de":"einmal"},{"id":270,"unit":9,"en":"twice","example":"I only feed my spider twice a week.","de":"zweimal"},{"id":271,"unit":9,"en":"across (Britain)","example":"There are lots of pets in homes across Britain.","de":"hier: in ganz (Großbritannien)"},{"id":272,"unit":9,"en":"dangerous","example":"Crocodiles are dangerous animals.","de":"gefährlich"},{"id":273,"unit":9,"en":"farm","example":"She lives on a farm with horses and pigs.","de":"Bauernhof"},{"id":274,"unit":9,"en":"man (pl men)","example":"The man's name is John.","de":"Mann"},{"id":275,"unit":9,"en":"near","example":"The Smith family lives near London.","de":"in der Nähe von"},{"id":276,"unit":9,"en":"newspaper","example":"My dad always reads the newspaper in the morning.","de":"Zeitung"},{"id":277,"unit":9,"en":"(...) a week","example":"He feeds his spider once a week.","de":"(...) in der Woche"},{"id":278,"unit":9,"en":"basket","example":"Grandpa gives her two baskets of apples and plums.","de":"Korb"},{"id":279,"unit":9,"en":"daughter","example":"Clare is her daughter.","de":"Tochter"},{"id":280,"unit":9,"en":"to drive","example":"On Sunday, they drive to Grandpa's house.","de":"fahren"},{"id":281,"unit":9,"en":"everybody","example":"Everybody in class is sad today.","de":"jede/r"},{"id":282,"unit":9,"en":"far away","example":"Grandpa's house is far away.","de":"weit weg"},{"id":283,"unit":9,"en":"grandpa","example":"My grandpa lives on a farm.","de":"Opa"},{"id":284,"unit":9,"en":"mother","example":"She lives at home with her mother.","de":"Mutter"},{"id":285,"unit":9,"en":"noise","example":"Clare hears a noise in the apartment.","de":"Geräusch"},{"id":286,"unit":9,"en":"to stay","example":"We can't stay here.","de":"bleiben"},{"id":287,"unit":9,"en":"cuddly toy","example":"All day long he plays with his cuddly toys.","de":"Stofftier"},{"id":288,"unit":9,"en":"to visit","example":"On Sunday, they visit Grandpa.","de":"besuchen"},{"id":289,"unit":9,"en":"to be interested in","example":"Tell me about the things you are interested in.","de":"an etw. interessiert sein"},{"id":290,"unit":9,"en":"fur","example":"My pet has fur – lots of it.","de":"Fell"},{"id":291,"unit":9,"en":"personal","example":"Don't put personal information on your blog.","de":"persönlich"},{"id":292,"unit":9,"en":"owner","example":"Jamie is the owner of an unusual pet.","de":"Besitzer/Besitzerin"},{"id":293,"unit":9,"en":"aunty","example":"Aunty Jane is Mum's sister.","de":"Tante (Koseform)"},{"id":294,"unit":9,"en":"dear","example":"Dear Aunty Olivia, ...","de":"liebe/r (Anrede)"},{"id":295,"unit":9,"en":"letter","example":"Thank you for your letter.","de":"Brief"},{"id":296,"unit":9,"en":"to bite","example":"I don't like that dog. It bites!","de":"beißen"},{"id":297,"unit":9,"en":"beginning","example":"The beginning of the film is fantastic.","de":"Anfang"},{"id":298,"unit":9,"en":"to begin","example":"He always begins his emails with \"Hi!\".","de":"anfangen, beginnen"},{"id":299,"unit":9,"en":"best wishes","example":"Best wishes to your mum and dad, Peter.","de":"herzliche Grüße"},{"id":300,"unit":9,"en":"ending","example":"The ending of the book is very strange.","de":"Ende, Schluss"},{"id":301,"unit":9,"en":"to need","example":"I really need your help.","de":"brauchen"},{"id":302,"unit":10,"en":"how much is/are ...","example":"How much are the trainers?","de":"wie viel kostet/kosten ..."},{"id":303,"unit":10,"en":"price","example":"The price is six pounds ninety-nine.","de":"Preis, Rechnungsbetrag"},{"id":304,"unit":10,"en":"these","example":"I'd like these shoes here.","de":"diese"},{"id":305,"unit":10,"en":"those","example":"I'd like those trainers over there.","de":"jene"},{"id":306,"unit":10,"en":"Anything else?","example":"","de":"Darf es noch etwas sein?"},{"id":307,"unit":10,"en":"Can I help you?","example":"","de":"Kann ich dir/Ihnen behilflich sein?"},{"id":308,"unit":10,"en":"computer game","example":"How much is the computer game?","de":"Computerspiel"},{"id":309,"unit":10,"en":"headphones","example":"She can't hear you. She has headphones on.","de":"Kopfhörer"},{"id":310,"unit":10,"en":"key ring","example":"I put my key on a key ring.","de":"Schlüsselanhänger"},{"id":311,"unit":10,"en":"magazine","example":"Can I buy this magazine?","de":"Zeitschrift, Magazin"},{"id":312,"unit":10,"en":"mobile phone","example":"Can I have a new mobile phone?","de":"Mobiltelefon, Handy"},{"id":313,"unit":10,"en":"scooter","example":"I ride my scooter to school.","de":"Roller"},{"id":314,"unit":10,"en":"sweets (pl)","example":"The sweets are one ninety-nine.","de":"Süßigkeiten"},{"id":315,"unit":10,"en":"tin","example":"A tin of chicken soup, please.","de":"Dose"},{"id":316,"unit":10,"en":"Congratulations!","example":"","de":"Herzlichen Glückwunsch!"},{"id":317,"unit":10,"en":"rule","example":"You know the rules.","de":"Regel"},{"id":318,"unit":10,"en":"customer","example":"His customers like to come to the shop.","de":"Kunde/Kundin"},{"id":319,"unit":10,"en":"everything","example":"Have you got everything?","de":"alles"},{"id":320,"unit":10,"en":"expensive","example":"The things in this shop are very expensive.","de":"teuer"},{"id":321,"unit":10,"en":"to fall asleep","example":"Mr Anderson sits on his chair and falls asleep.","de":"einschlafen"},{"id":322,"unit":10,"en":"Goodbye.","example":"","de":"Auf Wiedersehen, Tschüss."},{"id":323,"unit":10,"en":"I'd like ...","example":"I'd like 20 kilos of rice.","de":"Ich hätte gerne ..., Ich möchte ..."},{"id":324,"unit":10,"en":"No wonder.","example":"","de":"Kein Wunder."},{"id":325,"unit":10,"en":"suddenly","example":"Suddenly, he hears the doorbell.","de":"plötzlich, auf einmal"},{"id":326,"unit":10,"en":"town","example":"There's an old shop in the town.","de":"Stadt"},{"id":327,"unit":10,"en":"to walk away","example":"The horse picks up the food and walks away.","de":"weggehen, fortgehen"},{"id":328,"unit":10,"en":"changing room","example":"You can try them on in the changing room.","de":"Umkleidekabine"},{"id":329,"unit":10,"en":"No problem.","example":"","de":"Kein Problem."},{"id":330,"unit":10,"en":"over there","example":"How much are those socks over there in the window?","de":"da/dort drüben"},{"id":331,"unit":10,"en":"drawer","example":"All my socks are in the drawer.","de":"Schublade"},{"id":332,"unit":10,"en":"That's better.","example":"","de":"So ist es besser."},{"id":333,"unit":10,"en":"What can I do for you?","example":"","de":"Was kann ich für dich/Sie tun?"},{"id":334,"unit":10,"en":"Be careful.","example":"","de":"Pass(t) auf.; Sei(d) vorsichtig."},{"id":335,"unit":10,"en":"Just a minute.","example":"","de":"Einen Augenblick bitte.; Moment mal."},{"id":336,"unit":11,"en":"daily","example":"At 7 a.m., I do my daily exercise.","de":"täglich"},{"id":337,"unit":11,"en":"free time","example":"I like to read comics in my free time.","de":"Freizeit"},{"id":338,"unit":11,"en":"What's the time?","example":"","de":"Wie spät ist es?"},{"id":339,"unit":11,"en":"Excuse me.","example":"","de":"Entschuldigen Sie bitte., Entschuldigung."},{"id":340,"unit":11,"en":"to hurry","example":"We're late. Let's hurry.","de":"sich beeilen"},{"id":341,"unit":11,"en":"clock","example":"My clock shows the wrong time.","de":"Uhr"},{"id":342,"unit":11,"en":"It's 10 a.m.","example":"","de":"Es ist 10 Uhr morgens/vormittags."},{"id":343,"unit":11,"en":"It's 8 p.m.","example":"","de":"Es ist 8 Uhr abends."},{"id":344,"unit":11,"en":"What time is it?","example":"","de":"Wie spät ist es?"},{"id":345,"unit":11,"en":"bedtime","example":"Bedtime is at ten o'clock.","de":"Schlafenszeit"},{"id":346,"unit":11,"en":"break","example":"At a quarter to nine, I have a break.","de":"Pause"},{"id":347,"unit":11,"en":"exercise","example":"At a quarter to ten, we do our daily exercise.","de":"Übung; hier: (körperliche) Bewegung"},{"id":348,"unit":11,"en":"to go to bed","example":"I go to bed at nine o'clock.","de":"schlafen gehen"},{"id":349,"unit":11,"en":"to go to school","example":"Sarah goes to school at a quarter to eight.","de":"in die Schule gehen"},{"id":350,"unit":11,"en":"outside","example":"We always do our exercise outside.","de":"draußen, außerhalb"},{"id":351,"unit":11,"en":"to study","example":"I study art and drawing.","de":"lernen, studieren"},{"id":352,"unit":11,"en":"to wake somebody up","example":"My dad plays a loud song to wake me up.","de":"jemanden aufwecken"},{"id":353,"unit":11,"en":"amazing","example":"I want to show you something amazing!","de":"erstaunlich, großartig"},{"id":354,"unit":11,"en":"to answer the door","example":"There's a knock at the door. Suzy answers the door.","de":"die Tür aufmachen"},{"id":355,"unit":11,"en":"bush","example":"Let's hide behind the bush.","de":"Busch"},{"id":356,"unit":11,"en":"Have fun!","example":"","de":"Viel Spaß!"},{"id":357,"unit":11,"en":"to hide","example":"Tim is hiding in the bushes.","de":"(sich) verstecken"},{"id":358,"unit":11,"en":"knock","example":"There's a knock at the door.","de":"Klopfen"},{"id":359,"unit":11,"en":"living room","example":"She is watching TV in the living room.","de":"Wohnzimmer"},{"id":360,"unit":11,"en":"surprise","example":"Tim has got a surprise for Suzy.","de":"Überraschung"},{"id":361,"unit":11,"en":"to push","example":"The cat pushes the skateboard down the park.","de":"schieben; drücken"},{"id":362,"unit":11,"en":"to cook","example":"My mum cooks great spaghetti.","de":"kochen"},{"id":363,"unit":11,"en":"text message","example":"He's sending a text message.","de":"Textnachricht, SMS"},{"id":364,"unit":11,"en":"to look after","example":"She's looking after her cat.","de":"sich kümmern"},{"id":365,"unit":11,"en":"road","example":"I'm walking down the road.","de":"Straße, Weg"},{"id":366,"unit":11,"en":"place","example":"Can you come to my place?","de":"Ort, Platz; hier: Wohnung, Zuhause"},{"id":367,"unit":11,"en":"programme","example":"I'm watching a great TV programme.","de":"Programm, Sendung"},{"id":368,"unit":11,"en":"clue","example":"I don't know. Give me a clue.","de":"Hinweis, Tipp"},{"id":369,"unit":11,"en":"See you soon.","example":"","de":"Bis bald."},{"id":370,"unit":11,"en":"to snow","example":"It's snowing outside.","de":"schneien"},{"id":371,"unit":11,"en":"weather","example":"I hope the weather is nice tomorrow.","de":"Wetter"},{"id":372,"unit":11,"en":"half an hour","example":"I read for half an hour every evening.","de":"eine halbe Stunde"},{"id":373,"unit":11,"en":"Hurry up.","example":"","de":"Beeil dich. / Beeilt euch."},{"id":374,"unit":12,"en":"birthday cake","example":"Mike's mum is making a big birthday cake for his birthday.","de":"Geburtstagskuchen/-torte"},{"id":375,"unit":12,"en":"eater","example":"She never eats much. She's not a big eater.","de":"Esser/Esserin"},{"id":376,"unit":12,"en":"ill","example":"He isn't at school today because he's ill.","de":"krank"},{"id":377,"unit":12,"en":"messy","example":"He's a messy eater.","de":"unordentlich, schlampig"},{"id":378,"unit":12,"en":"piece","example":"Have a piece of my birthday cake!","de":"Stück"},{"id":379,"unit":12,"en":"cinema","example":"Let's go to the cinema on Friday.","de":"Kino"},{"id":380,"unit":12,"en":"excellent","example":"That's excellent work!","de":"ausgezeichnet"},{"id":381,"unit":12,"en":"finally","example":"Oh good! Finally we can leave!","de":"endlich, schließlich"},{"id":382,"unit":12,"en":"match","example":"There's a volleyball match on Saturday.","de":"Match, Spiel"},{"id":383,"unit":12,"en":"It's my birthday.","example":"","de":"Ich habe Geburtstag."},{"id":384,"unit":12,"en":"date","example":"Today's date is Monday, July 7th.","de":"Datum"},{"id":385,"unit":12,"en":"month","example":"February is the second month of the year.","de":"Monat"},{"id":386,"unit":12,"en":"How old are you?","example":"","de":"Wie alt bist du?"},{"id":387,"unit":12,"en":"candle","example":"The cake has twelve candles on it.","de":"Kerze"},{"id":388,"unit":12,"en":"delicious","example":"The chocolate cake looks delicious.","de":"köstlich"},{"id":389,"unit":12,"en":"last","example":"There was a robbery last night.","de":"letzter/letzte/letztes"},{"id":390,"unit":12,"en":"robber","example":"He wants to find the robber.","de":"Räuber/Räuberin"},{"id":391,"unit":12,"en":"robbery","example":"There was a robbery at the big house.","de":"Raubüberfall"},{"id":392,"unit":12,"en":"yesterday","example":"Where were you yesterday at 9 p.m.?","de":"gestern"},{"id":393,"unit":12,"en":"alarm clock","example":"The alarm clock wakes me up every morning.","de":"Wecker"},{"id":394,"unit":12,"en":"probably","example":"Last night at 9 p.m. I was probably in the garden.","de":"wahrscheinlich"},{"id":395,"unit":12,"en":"Good for you!","example":"","de":"Schön für dich!"},{"id":396,"unit":12,"en":"inspector","example":"The inspector asks the questions.","de":"Inspektor/Inspektorin"},{"id":397,"unit":12,"en":"How dare you!","example":"","de":"Wie kannst du es wagen!"},{"id":398,"unit":12,"en":"That was close.","example":"","de":"Das war knapp."},{"id":399,"unit":12,"en":"You're welcome.","example":"","de":"Nichts zu danken., Keine Ursache., Gern geschehen."},{"id":400,"unit":13,"en":"to radio","example":"He finds her and radios the rescue team.","de":"(an-)funken"},{"id":401,"unit":13,"en":"rescue team","example":"The rescue team arrives in the helicopter.","de":"Rettungsteam"},{"id":402,"unit":13,"en":"rock","example":"The rock is wet.","de":"Stein"},{"id":403,"unit":13,"en":"to shout for help","example":"She hasn't got a phone and shouts for help.","de":"um Hilfe rufen"},{"id":404,"unit":13,"en":"to slip","example":"He slips on wet rocks.","de":"ausrutschen"},{"id":405,"unit":13,"en":"storm","example":"Yesterday, there was a storm with strong winds.","de":"Sturm"},{"id":406,"unit":13,"en":"wet","example":"It rained. The rocks are wet.","de":"nass"},{"id":407,"unit":13,"en":"to arrive","example":"The mountain rescue team arrives.","de":"(an-)kommen"},{"id":408,"unit":13,"en":"to be safe","example":"The helicopter arrives. You're safe!","de":"in Sicherheit sein"},{"id":409,"unit":13,"en":"to dream","example":"Are you dreaming? No – the man has a jetpack.","de":"träumen"},{"id":410,"unit":13,"en":"to fall down","example":"You fall down and break your leg.","de":"(hinunter-)fallen"},{"id":411,"unit":13,"en":"to land","example":"It is difficult for a helicopter to land on a mountain.","de":"landen"},{"id":412,"unit":13,"en":"medicine","example":"The rescue team gives you medicine and keeps you warm.","de":"Medikament; Medizin"},{"id":413,"unit":13,"en":"sky","example":"It's night-time. The sky is dark.","de":"Himmel"},{"id":414,"unit":13,"en":"windy","example":"There's a storm. It's very windy.","de":"windig"},{"id":415,"unit":13,"en":"dark","example":"I can't see anything. It's very dark.","de":"dunkel"},{"id":416,"unit":13,"en":"young","example":"She's fifteen. She's a young teenager.","de":"jung"},{"id":417,"unit":13,"en":"alone","example":"I was alone in the mountains.","de":"allein"},{"id":418,"unit":13,"en":"backpack","example":"My phone was in my backpack.","de":"Rucksack"},{"id":419,"unit":13,"en":"to happen","example":"What happened? The helicopter came back.","de":"passieren"},{"id":420,"unit":13,"en":"to chase","example":"My dog chased a cat in our garden.","de":"verfolgen, jagen"},{"id":421,"unit":13,"en":"sunny","example":"The weather was sunny in the morning.","de":"sonnig"},{"id":422,"unit":13,"en":"class speaker","example":"At the beginning of the school year, we choose a class speaker.","de":"Klassensprecher/Klassensprecherin"},{"id":423,"unit":13,"en":"democracy","example":"In a democracy, the people have the power.","de":"Demokratie"},{"id":424,"unit":13,"en":"mayor","example":"The mayor is the leader of the town council.","de":"Bürgermeister/Bürgermeisterin"},{"id":425,"unit":13,"en":"political","example":"Political education is important.","de":"politisch"},{"id":426,"unit":13,"en":"to vote","example":"People vote for their parliament.","de":"wählen"},{"id":427,"unit":13,"en":"button","example":"Diana pressed the button.","de":"Schalter, Knopf"},{"id":428,"unit":13,"en":"cloud","example":"There were dark clouds in the sky.","de":"Wolke"},{"id":429,"unit":13,"en":"Earth","example":"We live on Earth.","de":"Erde"},{"id":430,"unit":13,"en":"to die","example":"The Earth is dying.","de":"sterben"},{"id":431,"unit":13,"en":"forest","example":"There are a lot of trees in the forest.","de":"Wald"},{"id":432,"unit":13,"en":"introduction","example":"Read the introduction to the radio play.","de":"Einleitung"},{"id":433,"unit":13,"en":"space","example":"People are living in spaceships in space.","de":"Weltall"},{"id":434,"unit":13,"en":"to notice","example":"Suddenly, they noticed a little spaceship.","de":"bemerken"},{"id":435,"unit":13,"en":"to press","example":"You have to press the button.","de":"drücken"},{"id":436,"unit":13,"en":"screen","example":"They were in front of a big screen.","de":"Bildschirm"},{"id":437,"unit":13,"en":"adventure","example":"That was a great adventure!","de":"Abenteuer, Erlebnis"},{"id":438,"unit":13,"en":"character","example":"In the story, the characters are in space.","de":"Figur; Person"},{"id":439,"unit":13,"en":"Guess what?","example":"","de":"Du wirst es nicht glauben."},{"id":440,"unit":13,"en":"Tell me more.","example":"","de":"Erzähl mir mehr."},{"id":441,"unit":14,"en":"cartoon","example":"Cartoons are my favourite programme.","de":"Zeichentrick(-film/-serie)"},{"id":442,"unit":14,"en":"screen time","example":"Every day we have three hours of screen time.","de":"Zeit vor einem Bildschirm"},{"id":443,"unit":14,"en":"headline","example":"What's the news headline today?","de":"Schlagzeile"},{"id":444,"unit":14,"en":"latest","example":"This is their latest song.","de":"neuester/neueste/neuestes"},{"id":445,"unit":14,"en":"comedy","example":"We also watch comedy series.","de":"Komödie"},{"id":446,"unit":14,"en":"episode","example":"I watch three episodes a day.","de":"Episode, Folge"},{"id":447,"unit":14,"en":"gamer","example":"I watch the gamers.","de":"Spieler/Spielerin; Zocker/Zockerin"},{"id":448,"unit":14,"en":"kind of","example":"I usually watch some kind of series.","de":"eine Art von"},{"id":449,"unit":14,"en":"quite","example":"I quite like detective films.","de":"ziemlich"},{"id":450,"unit":14,"en":"to stream","example":"We sometimes stream a film.","de":"streamen"},{"id":451,"unit":14,"en":"weekend","example":"Saturday and Sunday are the weekend.","de":"Wochenende"},{"id":452,"unit":14,"en":"to freeze (froze)","example":"The film stopped and the people in the picture froze.","de":"erstarren, anhalten"},{"id":453,"unit":14,"en":"huge","example":"An elephant is a huge animal.","de":"riesig"},{"id":454,"unit":14,"en":"inside","example":"Inside the car, there were four people.","de":"in, innerhalb"},{"id":455,"unit":14,"en":"to pay (paid)","example":"I paid three pounds for my hamburger.","de":"(be-)zahlen"},{"id":456,"unit":14,"en":"to point to","example":"She pointed to the clock inside the bank.","de":"zeigen auf"},{"id":457,"unit":14,"en":"power","example":"It has special powers.","de":"Kraft"},{"id":458,"unit":14,"en":"remote control","example":"You use a remote control to change the programme.","de":"Fernbedienung"},{"id":459,"unit":14,"en":"to reply (replied)","example":"I replied to your email this morning.","de":"antworten"},{"id":460,"unit":14,"en":"to sell (sold)","example":"He wants to sell his old car.","de":"verkaufen"},{"id":461,"unit":14,"en":"tiny","example":"An ant is a tiny insect.","de":"winzig"},{"id":462,"unit":14,"en":"voice","example":"She's a great singer with a beautiful voice.","de":"Stimme"},{"id":463,"unit":14,"en":"wide","example":"There's a very wide road near our house.","de":"breit; weit"},{"id":464,"unit":14,"en":"to fight (fought)","example":"He fought his sister to get the control.","de":"kämpfen (mit)"},{"id":465,"unit":14,"en":"shopkeeper","example":"The shopkeeper wasn't there.","de":"Ladenbesitzer/Ladenbesitzerin"},{"id":466,"unit":14,"en":"to disappear","example":"He turned the ring and disappeared.","de":"verschwinden"},{"id":467,"unit":14,"en":"to hold (held)","example":"The robber held a gun in his hand.","de":"halten"},{"id":468,"unit":14,"en":"to spend","example":"We spend a lot of time watching shows.","de":"verbringen (mit)"},{"id":469,"unit":14,"en":"to bend down (bent down)","example":"Bend down and hug me.","de":"(sich) hinunterbeugen"},{"id":470,"unit":14,"en":"to hug","example":"Can I hug you?","de":"umarmen"},{"id":471,"unit":14,"en":"lake","example":"The giraffe went to the lake.","de":"See"},{"id":472,"unit":14,"en":"leaf (pl leaves)","example":"It only eats leaves.","de":"Blatt (Blätter)"},{"id":473,"unit":14,"en":"to lie","example":"I want to lie in the sun.","de":"liegen"},{"id":474,"unit":14,"en":"skin","example":"The lion's skin is yellow.","de":"Haut"},{"id":475,"unit":14,"en":"spot","example":"The giraffe has black spots.","de":"Punkt"},{"id":476,"unit":14,"en":"weak","example":"I feel so weak today.","de":"schwach"},{"id":477,"unit":14,"en":"dead","example":"Maybe I'm dead tomorrow.","de":"tot"},{"id":478,"unit":14,"en":"once upon a time","example":"Once upon a time, there was a lion.","de":"es war einmal"},{"id":479,"unit":14,"en":"one day","example":"One day, the giraffe went to the lake.","de":"eines Tages"},{"id":480,"unit":14,"en":"adventure","example":"My favourite books are adventure stories.","de":"Abenteuer"},{"id":481,"unit":14,"en":"cover","example":"Look at the book covers.","de":"(Buch-)Umschlag"},{"id":482,"unit":14,"en":"friendship","example":"Is this a story about friendship?","de":"Freundschaft"},{"id":483,"unit":14,"en":"poem","example":"I read a poem every day.","de":"Gedicht"},{"id":484,"unit":14,"en":"neighbour","example":"The neighbour's kid is nice.","de":"Nachbar/Nachbarin"},{"id":485,"unit":15,"en":"aunt","example":"My aunt is my mum's sister.","de":"Tante"},{"id":486,"unit":15,"en":"beach","example":"Let's go to the beach and swim in the sea.","de":"Strand"},{"id":487,"unit":15,"en":"board game","example":"In the evening, we're going to play board games.","de":"Brettspiel"},{"id":488,"unit":15,"en":"campsite","example":"We're going to stay at a campsite and sleep in a tent.","de":"Campingplatz"},{"id":489,"unit":15,"en":"cook","example":"My grandma is a very good cook.","de":"Koch/Köchin"},{"id":490,"unit":15,"en":"to drive","example":"We're going to drive to Grandma's house. It's a long drive.","de":"fahren; Fahrt"},{"id":491,"unit":15,"en":"holiday","example":"My mum and dad have no holiday.","de":"Urlaub; Ferien"},{"id":492,"unit":15,"en":"national park","example":"We're going to visit the national parks in the United States.","de":"Nationalpark"},{"id":493,"unit":15,"en":"parents","example":"My parents and I are going to fly to the US.","de":"Eltern"},{"id":494,"unit":15,"en":"plane","example":"I'm not scared of flying. I can sleep on the plane most of the time.","de":"Flugzeug"},{"id":495,"unit":15,"en":"summer","example":"In the summer, I'm going to go swimming.","de":"Sommer"},{"id":496,"unit":15,"en":"hippo","example":"Hippos are big animals.","de":"Nilpferd"},{"id":497,"unit":15,"en":"to join","example":"Let's join an Irish band.","de":"beitreten, ein Mitglied werden"},{"id":498,"unit":15,"en":"to invite","example":"Who are you going to invite to your party?","de":"einladen"}];
+const KEY="vocabHero_v1", RPG_KEY="vocabHeroRpgV6";
+const WORLD={
+1:{e:"🌲",n:"Sonnenwald",elite:"Moos-Troll",ee:"👹",boss:"Waldgolem",be:"🌳"},2:{e:"🦜",n:"Tierpark-Tal",elite:"Alpha-Wolf",ee:"🐺",boss:"Tierwächter",be:"🦁"},3:{e:"🏴‍☠️",n:"Piratenbucht",elite:"Geisterpirat",ee:"👻",boss:"Kapitän Schwarzbart",be:"🏴‍☠️"},4:{e:"🎭",n:"Bühnenstadt",elite:"Maskenritter",ee:"🎭",boss:"Phantom der Bühne",be:"👤"},5:{e:"🎸",n:"Klangküste",elite:"Rock-Golem",ee:"🗿",boss:"Sound Beast",be:"🔊"},6:{e:"🧪",n:"Zauberwerkstatt",elite:"Chaosmagier",ee:"🧙",boss:"Runenmeister",be:"🧙‍♂️"},7:{e:"🍳",n:"Genussdorf",elite:"Küchen-Oger",ee:"👹",boss:"Feuerkoch",be:"🔥"},8:{e:"🐎",n:"Rätsel-Ranch",elite:"Schattenreiter",ee:"🐎",boss:"Rätselhengst",be:"🦄"},9:{e:"🐾",n:"Haustier-Hügel",elite:"Nachtwolf",ee:"🐺",boss:"Bestienkönig",be:"🦁"},10:{e:"🛍️",n:"Marktstadt",elite:"Gold-Gargoyle",ee:"🗿",boss:"Münzen-Magier",be:"🧙"},11:{e:"⏰",n:"Zeitturm",elite:"Zeitgeist",ee:"👻",boss:"Chronowächter",be:"⏳"},12:{e:"🎂",n:"Geburtstagsburg",elite:"Kerzenritter",ee:"🛡️",boss:"Festungsdrache",be:"🐉"},13:{e:"🚁",n:"Sturmgipfel",elite:"Gewittergreif",ee:"🦅",boss:"Sturmdrache",be:"🐲"},14:{e:"📺",n:"Flimmerforst",elite:"Pixelgeist",ee:"👾",boss:"Glitch-Titan",be:"🤖"},15:{e:"✈️",n:"Ferienküste",elite:"Klippenriese",ee:"🗿",boss:"Himmelsdrache",be:"🐉"}};
+const WEAPONS=[
+{id:"starter",u:0,n:"Trainingsschwert",i:"🗡️",d:1,fx:"⚔️",p:0,pct:0},
+{id:"w1",u:1,n:"Waldklinge",i:"🗡️",d:2,fx:"🍃",p:30,pct:20},{id:"w2",u:2,n:"Fangzahn-Säbel",i:"⚔️",d:2,fx:"🐾",p:38,pct:20},{id:"w3",u:3,n:"Piratensäbel",i:"🗡️",d:3,fx:"💦",p:46,pct:22},{id:"w4",u:4,n:"Bühnenrapier",i:"🤺",d:3,fx:"✨",p:54,pct:22},{id:"w5",u:5,n:"Schallhammer",i:"🔨",d:4,fx:"🔊",p:62,pct:25},{id:"w6",u:6,n:"Runenstab",i:"🪄",d:4,fx:"🔮",p:70,pct:25},{id:"w7",u:7,n:"Flammenklinge",i:"⚔️",d:5,fx:"🔥",p:78,pct:25},{id:"w8",u:8,n:"Reiterlanze",i:"🔱",d:5,fx:"💨",p:86,pct:28},{id:"w9",u:9,n:"Wolfsklinge",i:"🗡️",d:6,fx:"🐺",p:94,pct:28},{id:"w10",u:10,n:"Goldhammer",i:"🔨",d:6,fx:"💥",p:102,pct:30},{id:"w11",u:11,n:"Chronoklinge",i:"⚔️",d:7,fx:"⏱️",p:110,pct:30},{id:"w12",u:12,n:"Festklinge",i:"🗡️",d:7,fx:"🎇",p:118,pct:30},{id:"w13",u:13,n:"Sturmaxt",i:"🪓",d:8,fx:"⚡",p:126,pct:32},{id:"w14",u:14,n:"Pixelstab",i:"🪄",d:8,fx:"💠",p:134,pct:32},{id:"w15",u:15,n:"Himmelsklinge",i:"⚔️",d:9,fx:"🌠",p:145,pct:35}];
+const SPECIALS=[{u:2,n:"Fire Slash",i:"🔥",fx:"🔥",bonus:1,p:48,pct:45},{u:4,n:"Thunder Strike",i:"⚡",fx:"⚡",bonus:2,p:65,pct:48},{u:6,n:"Arcane Burst",i:"🔮",fx:"🔮",bonus:3,p:82,pct:50},{u:8,n:"Frost Nova",i:"❄️",fx:"❄️",bonus:4,p:99,pct:52},{u:10,n:"Shadow Wave",i:"🌑",fx:"🌑",bonus:5,p:116,pct:55},{u:12,n:"Dragon Flame",i:"🐉",fx:"🔥",bonus:6,p:133,pct:58},{u:14,n:"Star Storm",i:"🌟",fx:"🌟",bonus:7,p:150,pct:60}];
+const COMPANIONS=[{id:"c2",u:2,n:"Waldwolf",i:"🐺",p:60,pct:55,desc:"Bei jeder 4er-Serie +1 Schaden."},{id:"c5",u:5,n:"Eule",i:"🦉",p:85,pct:55,desc:"Spezialattacken verursachen +1 Schaden."},{id:"c8",u:8,n:"Fuchs",i:"🦊",p:110,pct:58,desc:"Höhere Chance auf Kristall-Drops."},{id:"c11",u:11,n:"Schutzgeist",i:"👻",p:135,pct:60,desc:"Blockt den ersten Gegentreffer."},{id:"c14",u:14,n:"Mini-Drache",i:"🐲",p:165,pct:62,desc:"Spezialattacken verursachen +2 Schaden."}];
+const HEARTS=[3,6,9,12,15].map(u=>({id:"h"+u,u,n:"Herzfragment",i:"❤️",p:45+u*6,pct:65}));
+const AURAS=["🌿","💧","☠️","🎭","🎵","🔮","🔥","✨","🌙","💰","⏳","🎉","⚡","💠","🌠"].map((i,k)=>({id:"a"+(k+1),u:k+1,n:"Aura "+i,i,p:18+(k+1)*3,pct:35}));
+let state=loadState(),session=null,current=null,shopUnit=1,battle=null;
+function fresh(){return {score:0,activeUnits:[],words:{}}}function loadState(){try{return {...fresh(),...JSON.parse(localStorage.getItem(KEY)||"{}")}}catch(e){return fresh()}}function save(){localStorage.setItem(KEY,JSON.stringify(state));refreshTop()}function wstate(id){if(!state.words[id])state.words[id]={ed:{r:0,w:0},de:{r:0,w:0},sp:{r:0,w:0},correctSinceError:0,last:0};let s=state.words[id];if(s.correctSinceError===undefined)s.correctSinceError=(s.de&&s.de.w>0)?0:Math.min((s.de&&s.de.r)||0,2);return s}
+function defaultRpg(){return {xp:0,level:1,coins:0,coinWords:[],coinFirstWords:[],inventory:["starter"],equippedWeapon:"starter",equippedCompanion:null,equippedAura:null,specialLevel:0,maxHp:4,hp:4,energy:0,crystals:0,seals:0,cores:0,elites:[],bosses:[],perfectRuns:{},shadowWins:{},shadowLosses:{},migrationV5:false,migrationV51:false}}
+function loadRpg(){
+  let x={};
+  try{x=JSON.parse(localStorage.getItem(RPG_KEY)||localStorage.getItem("vocabHeroRpgV5")||localStorage.getItem("vocabHeroRpgV4")||"{}")||{}}catch(e){}
+  let full=Array.isArray(x.coinWords)?x.coinWords:[],first=Array.isArray(x.coinFirstWords)?x.coinFirstWords:[...full];
+  return {...defaultRpg(),...x,coinWords:full,coinFirstWords:first,
+    inventory:Array.isArray(x.inventory)?x.inventory:["starter"],
+    elites:Array.isArray(x.elites)?x.elites:[],bosses:Array.isArray(x.bosses)?x.bosses:[],
+    perfectRuns:x.perfectRuns&&typeof x.perfectRuns==="object"?x.perfectRuns:{},
+    shadowWins:x.shadowWins&&typeof x.shadowWins==="object"?x.shadowWins:{},
+    shadowLosses:x.shadowLosses&&typeof x.shadowLosses==="object"?x.shadowLosses:{}}
+}
+let rpg=loadRpg();function saveRpg(){localStorage.setItem(RPG_KEY,JSON.stringify(rpg));refreshTop()}
+function skillState(v){let s=state.words[v.id];if(!s)return {pct:0,safe:false};let c=s.correctSinceError!==undefined?s.correctSinceError:0;return {pct:c>=2?100:c===1?50:0,safe:c>=2}}
+function unitProgress(u){let a=VOCAB.filter(v=>v.unit===u),safe=a.filter(v=>skillState(v).safe).length;return {safe,total:a.length,pct:a.length?Math.round(safe/a.length*100):0,mastered:rpg.bosses.includes(u)}}function totalSafe(){return VOCAB.filter(v=>skillState(v).safe).length}function world(u){return WORLD[u]}
+function migrateCoins(){
+  if(!rpg.migrationV5){
+    let safe=VOCAB.filter(v=>skillState(v).safe);
+    for(const v of safe)if(!rpg.coinWords.includes(v.id)){
+      rpg.coinWords.push(v.id);
+      if(!rpg.coinFirstWords.includes(v.id))rpg.coinFirstWords.push(v.id);
+      rpg.coins+=5
+    }
+    rpg.migrationV5=true
+  }
+  if(!rpg.migrationV51){
+    for(const id of rpg.coinWords)if(!rpg.coinFirstWords.includes(id))rpg.coinFirstWords.push(id);
+    for(const v of VOCAB){
+      let s=state.words[v.id];
+      if(s&&s.de&&s.de.r>0&&!rpg.coinWords.includes(v.id)&&!rpg.coinFirstWords.includes(v.id)){
+        rpg.coinFirstWords.push(v.id);rpg.coins+=2
+      }
+    }
+    rpg.migrationV51=true
+  }
+  saveRpg()
+}
+function levelForXp(x){return Math.floor(x/180)+1}function levelTitle(){return rpg.level>=18?"Wortlegende":rpg.level>=12?"Drachenjäger":rpg.level>=7?"Ritter":rpg.level>=3?"Abenteurer":"Anfänger"}function weapon(){return WEAPONS.find(x=>x.id===rpg.equippedWeapon)||WEAPONS[0]}function companion(){return COMPANIONS.find(x=>x.id===rpg.equippedCompanion)||null}function aura(){return AURAS.find(x=>x.id===rpg.equippedAura)||null}function combatPower(){let w=weapon(),c=companion(),a=aura();return w.d*10+rpg.maxHp*4+rpg.level*2+rpg.specialLevel*4+(c?8:0)+(a?2:0)}function bossPowerReq(u){return 27+u*7}function knowledgeReq(u){let prev=VOCAB.filter(v=>v.unit<u).length,ratio=u<=5?.25:u<=10?.4:.55;return Math.floor(prev*ratio)}
+function refreshTop(){
+  let a=document.getElementById("topLevel"),b=document.getElementById("topCoins"),c=document.getElementById("topPower");
+  if(a)a.textContent=`Lv ${rpg.level} · ${levelTitle()}`;
+  if(b)b.innerHTML=`<span class="goldCoin"></span>${rpg.coins} Gold`;
+  if(c)c.textContent=`⚔️ ${combatPower()}`
+}
+function screens(id){document.querySelectorAll(".screen").forEach(x=>x.classList.remove("on"));document.getElementById(id).classList.add("on")}
+function goHome(){
+  renderUnits();refreshTop();
+  let medals=Object.values(rpg.perfectRuns||{}).reduce((a,b)=>a+(+b||0),0);
+  document.getElementById("homeStatus").innerHTML=`<span class="goldCoin"></span>${rpg.coins} · ⚔️ ${combatPower()} · 🏅 ${medals} · 🏆 ${rpg.bosses.length}/15`;
+  screens("home")
+}
+function activate(u){if(!state.activeUnits.includes(u)){state.activeUnits.push(u);state.activeUnits.sort((a,b)=>a-b);save()}}
+function unitClass(u){if(!state.activeUnits.includes(u))return "locked";let p=unitProgress(u);return p.mastered?"mastered":p.pct>=60?"good":p.pct>=30?"mid":""}
+function eliteReady(u){return unitProgress(u).pct>=60&&!rpg.elites.includes(u)}function boughtInUnit(u){return rpg.inventory.some(id=>[...WEAPONS,...COMPANIONS,...HEARTS,...AURAS].some(x=>x.id===id&&x.u===u))||SPECIALS.some((x,i)=>x.u===u&&rpg.specialLevel>=i+1)}function bossReady(u){let p=unitProgress(u);return p.pct===100&&rpg.elites.includes(u)&&boughtInUnit(u)&&combatPower()>=bossPowerReq(u)&&!rpg.bosses.includes(u)}
+function renderUnits(){
+  let e=document.getElementById("quickUnits");e.innerHTML="";
+  for(let u=1;u<=15;u++){
+    let p=unitProgress(u),w=world(u),med=(rpg.perfectRuns&&rpg.perfectRuns[u])||0,d=document.createElement("div");
+    d.className="unit "+unitClass(u);
+    d.innerHTML=`<div class="unitBody"><div><div class="unitTop"><span class="unitEmoji">${p.mastered?"🏆":state.activeUnits.includes(u)?w.e:"🔒"}</span><span class="unitNo">Unit ${u}</span></div><div class="worldName">${w.n}</div></div><div><div class="unitBar"><i style="width:${p.pct}%"></i></div><div class="unitMeta"><span>${p.pct}% ${med?`<span class="medalBadge">🏅${med}</span>`:""}</span><span class="wide">${p.safe}/${p.total}</span></div><div class="fightButtons">${eliteReady(u)?`<button class="miniFight" data-elite="${u}">ELITE</button>`:""}${bossReady(u)?`<button class="miniFight boss" data-boss="${u}">BOSS</button>`:""}</div></div></div>`;
+    d.onclick=()=>startUnit(u);e.appendChild(d)
+  }
+  e.querySelectorAll("[data-elite]").forEach(b=>b.onclick=ev=>{ev.stopPropagation();startElite(+b.dataset.elite)});
+  e.querySelectorAll("[data-boss]").forEach(b=>b.onclick=ev=>{ev.stopPropagation();startBoss(+b.dataset.boss)})
+}
+function shuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}function weighted(pool,problem=false){let a=[];pool.forEach(v=>{let s=wstate(v.id),w=s.ed.w+s.de.w+s.sp.w,r=s.ed.r+s.de.r+s.sp.r,n=problem?Math.max(1,w*2):Math.max(1,1+w*2-Math.floor(r/4));for(let i=0;i<n;i++)a.push(v)});return shuffle(a).slice(0,12)}
+function startUnit(u){activate(u);startSession(shuffle(VOCAB.filter(v=>v.unit===u)).slice(0,12),`${world(u).e} ${world(u).n}`,u,"normal")}function startReview(){let p=VOCAB.filter(v=>state.activeUnits.includes(v.unit));if(!p.length)return alert("Starte zuerst eine Unit.");startSession(weighted(p),"Trainingsarena",null,"normal")}function startProblems(){let p=VOCAB.filter(v=>{let s=state.words[v.id];return s&&(s.ed.w+s.de.w+s.sp.w)>0});if(!p.length)return alert("Noch keine Problemwörter – stark! 🎉");startSession(weighted(p,true),"Monsterjagd",null,"normal")}function startElite(u){if(!eliteReady(u))return;startSession(shuffle(VOCAB.filter(v=>v.unit===u)).slice(0,12),`ELITE · ${world(u).n}`,u,"elite")}function startBoss(u){if(!bossReady(u))return showBossRequirements(u);startSession(shuffle(VOCAB.filter(v=>v.unit===u)).slice(0,12),`BOSS · ${world(u).n}`,u,"boss")}
+function startSession(pool,label,u,type){
+  session={pool:shuffle(pool),label,unit:u,idx:0,battleIdx:0,asked:0,streak:0,bestStreak:0,coins:0,kills:0,finished:false,
+    type,phase:type==="normal"?"questions":"battle",errorCount:0,errorWords:[],eliteErrors:0,eliteAsked:0,baseTotal:pool.length,victory:null};
+  initBattle(u||((pool[0]||{}).unit)||1,type);
+  screens("quiz");renderBattle();nextQuestion()
+}
+function initBattle(u,type){
+  let w=world(u),hp=type==="boss"?20+u*4:type==="elite"?12+u*3:6+u*2;
+  let name=type==="boss"?w.boss:type==="elite"?w.elite:regularEnemy(u),
+      emoji=type==="boss"?w.be:type==="elite"?w.ee:regularEmoji(u);
+  battle={unit:u,type,hp,maxHp:hp,name,emoji,shieldUsed:false,finished:false,attackDamage:type==="boss"&&u>=8?2:1,severity:0,charged:false};
+  rpg.hp=rpg.maxHp;saveRpg()
+}
+function regularEnemy(u){let a=["Schleim","Kobold","Fledermaus","Schattenwolf","Skelett","Ork","Waldgeist"];return a[(u-1)%a.length]}function regularEmoji(u){return ["🟢","👺","🦇","🐺","💀","👹","👻"][(u-1)%7]}
+function renderBattle(){
+  let wpn=weapon(),c=companion(),a=aura(),xpBase=(rpg.level-1)*180,xpPct=Math.max(0,Math.min(100,(rpg.xp-xpBase)/180*100));
+  document.getElementById("battleHud").innerHTML=`<div class="heroMini"><div class="avatarMini">🧙‍♂️</div><div><b>Lv ${rpg.level} · ${levelTitle()}</b><div style="font-size:10px">${wpn.i} ${wpn.n}${c?` · ${c.i} ${c.n}`:""}</div><div class="xpbar"><div class="xpfill" style="width:${xpPct}%"></div></div></div></div><div class="gearText" style="text-align:right;font-size:10px"><b>⚔️ ${combatPower()}</b><br>💎 ${rpg.crystals} · 🛡️ ${rpg.seals}</div>`;
+  document.getElementById("weaponVisual").textContent=wpn.i;
+  document.getElementById("companionVisual").textContent=c?c.i:"";
+  document.getElementById("heroAura").style.background=a?"radial-gradient(circle,#b58cff,transparent 65%)":"transparent";
+  document.getElementById("heroHp").textContent="❤️".repeat(rpg.hp)+"🖤".repeat(Math.max(0,rpg.maxHp-rpg.hp));
+  document.getElementById("enemyF").textContent=battle.emoji;
+  let prefix=battle.type==="boss"?"👑 ":battle.type==="elite"?"⚠️ ":battle.type==="shadowElite"?"🌑 ":"";
+  document.getElementById("enemyName").textContent=`${prefix}${battle.name} · ${Math.max(0,battle.hp)}/${battle.maxHp}`;
+  document.getElementById("enemyHpFill").style.width=Math.max(0,battle.hp/battle.maxHp*100)+"%";
+  document.getElementById("battlePower").textContent=`${wpn.i} ${baseDamage()} Schaden · ⚔️ Kraft ${combatPower()}`;
+  document.getElementById("roundCoins").innerHTML=`<span class="goldCoin"></span>${session?session.coins:0}`;
+  let arena=document.getElementById("battleArena");arena.className=`arena world-${battle.unit}`;
+  let hint=document.getElementById("comboHint");
+  if(hint&&session){
+    if(session.phase==="shadowElite"){
+      let danger=battle.severity>=4?"EXTREM":battle.severity>=3?"SCHWER":battle.severity>=2?"MITTEL":"MACHBAR";
+      hint.innerHTML=`🌑 Schatten-Elite · <span class="${battle.severity>=3?"dangerText":""}">${danger}</span>`
+    }else{
+      let s=session.streak,next=s<3?3:s<5?5:s<10?10:(Math.floor(s/5)+1)*5;
+      hint.textContent=s>=2?`🔥 Serie ${s} · nächste Spezialattacke bei ${next}`:"🔥 Serien lösen automatisch Spezialattacken aus"
+    }
+  }
+}
+function baseDamage(){return weapon().d+Math.floor((rpg.level-1)/8)}function currentSpecial(){if(rpg.specialLevel<=0)return {n:"Power Strike",fx:"💥",bonus:0};let s=SPECIALS[Math.min(SPECIALS.length-1,rpg.specialLevel-1)];return {n:s.n,fx:s.fx,bonus:s.bonus}}
+function chooseDirection(){return Math.random()<.5?"de":"ed"}function nextQuestion(){
+  if(!session||session.finished)return;
+  if(rpg.hp<=0)return handleDefeat();
+  if(battle.finished)return finishQuiz(true);
+
+  let fb=document.getElementById("feedback");fb.className="feedback";fb.innerHTML="";
+  document.getElementById("nextBtn").style.display="none";document.getElementById("checkBtn").style.display="block";
+  let inp=document.getElementById("answer");inp.value="";inp.disabled=false;
+
+  if(session.type==="normal"&&session.phase==="questions"&&session.idx>=session.pool.length)
+    return completeQuestionPhase();
+
+  let source;
+  if(session.phase==="shadowElite"){
+    source=session.errorWords;
+    if(!source.length)return completeQuestionPhase();
+    if(session.battleIdx>=source.length){session.battleIdx=0;session.errorWords=shuffle(session.errorWords);source=session.errorWords}
+    current=source[session.battleIdx++];session.eliteAsked++;
+    battle.charged=battle.severity>=3&&session.eliteAsked%3===0;
+    if(battle.charged)document.getElementById("battleMessage").textContent="🔥 Schattenfeuer lädt! Richtige Antwort unterbricht den Angriff."
+  }else if(session.type==="elite"||session.type==="boss"){
+    source=session.pool;
+    if(session.battleIdx>=source.length){session.battleIdx=0;session.pool=shuffle(session.pool);source=session.pool}
+    current=source[session.battleIdx++]
+  }else{
+    current=session.pool[session.idx++]
+  }
+
+  current.dir=chooseDirection();session.asked++;
+  document.getElementById("modeLabel").textContent=session.phase==="shadowElite"?`🌑 SCHATTEN-ELITE · ${session.label}`:session.label;
+  let wd=world(current.unit);document.getElementById("unitLabel").textContent=`${wd.e} ${wd.n} · Unit ${current.unit}`;
+  document.getElementById("direction").textContent=current.dir==="de"?"🇩🇪 → 🇬🇧":"🇬🇧 → 🇩🇪";
+  document.getElementById("question").textContent=current.dir==="de"?displayDE(current.de):current.en;
+  document.getElementById("prompt").textContent=session.phase==="shadowElite"?"Besiege den Elite mit den schwierigen Wörtern!":current.dir==="de"?"Wie heißt das auf Englisch?":"Was bedeutet das auf Deutsch?";
+  document.getElementById("streak").textContent=session.streak;document.getElementById("qCount").textContent=session.asked;
+  let pct=session.phase==="questions"?Math.min(100,session.idx/session.baseTotal*100):Math.max(0,100-battle.hp/battle.maxHp*100);
+  document.getElementById("questionBar").style.width=pct+"%";renderBattle();setTimeout(()=>inp.focus(),50)
+}function displayDE(s){return s.split(";")[0].trim()}
+function norm(s){
+  return(s||"").toLowerCase().trim()
+    .replace(/[’‘`´]/g,"'")
+    .replace(/[()[\]{}]/g," ")
+    .replace(/[.!?;,:„“"]/g," ")
+    .replace(/\s+/g," ").trim()
+}
+function compact(s){return norm(s).replace(/[-–—\s]/g,"")}
+function uniq(a){return[...new Set(a.map(x=>norm(x)).filter(Boolean))]}
+
+const BOOK_EXTRAS={
+  "Geburtstagskuchen/-torte":["Geburtstagskuchen","Geburtstagstorte"],
+  "Zeichentrick(-film/-serie)":["Zeichentrick","Zeichentrickfilm","Zeichentrickserie"],
+  "(welt-)bester/beste/bestes":["bester","beste","bestes","weltbester","weltbeste","weltbestes"],
+  "there is (there's)":["there is","there's"],
+  "vegetables (veggies)":["vegetables","veggies"],
+  "Blatt (Blätter)":["Blatt","Blätter"],
+  "Tante (Koseform)":["Tante"],
+  "liebe/r (Anrede)":["lieber","liebe"]
+};
+const NOTE_WORDS=new Set(["koseform","anrede"]);
+const PREP_WORDS=new Set(["of","vor","mit","aus","in","an","bei","britain","großbritannien"]);
+
+function slashVariants(s){
+  s=(s||"").trim();
+  if(!s)return[];
+  if(/\s+\/\s+/.test(s))return uniq(s.split(/\s+\/\s+/).flatMap(x=>slashVariants(x)));
+  let toks=s.split(/\s+/),vars=[""];
+  for(const tok of toks){
+    let opts=[tok];
+    if(tok.includes("/")){
+      let ps=tok.split("/"),base=ps[0];
+      opts=[base];
+      for(let i=1;i<ps.length;i++){
+        let q=ps[i]; if(!q)continue;
+        if(q.startsWith("-")){
+          // Rare compound shorthand is handled by BOOK_EXTRAS; keep a conservative fallback.
+          opts.push(base+q.slice(1));
+        }else if(base.toLowerCase().endsWith("bester") && /^beste/.test(q.toLowerCase())){
+          opts.push(base.slice(0,-6)+q);
+        }else if(q.length<=2){
+          opts.push(base+q);
+        }else if(q.length>=Math.max(3,base.length-2)){
+          opts.push(q);
+        }else{
+          opts.push(base+q);
+        }
+      }
+    }
+    let next=[];
+    for(const v of vars)for(const o of opts)next.push((v+" "+o).trim());
+    vars=next
+  }
+  return uniq(vars)
+}
+
+function expandOptional(s){
+  s=(s||"").trim();
+  if(!s)return[];
+  if(BOOK_EXTRAS[s])return uniq(BOOK_EXTRAS[s]);
+
+  let eq=s.match(/^(.*?)\s*\(=\s*([^)]+)\)\s*(.*)$/);
+  if(eq)return uniq([`${eq[1]} ${eq[3]}`,`${eq[2]} ${eq[3]}`].flatMap(x=>expandOptional(x)));
+
+  // Grammar notes: base form always valid; listed plural also counts as a valid book form.
+  let gram=s.match(/^(.*?)\((pl\s+([^)]+)|pl|no pl)\)(.*)$/i);
+  if(gram){
+    let out=[`${gram[1]} ${gram[4]}`];
+    if(gram[3]&&gram[4].trim()==="")out.push(gram[3]);
+    return uniq(out.flatMap(x=>expandOptional(x)))
+  }
+
+  let m=s.match(/^(.*?)\(([^()]*)\)(.*)$/);
+  if(!m){
+    let out=slashVariants(s);
+    return uniq(out.flatMap(x=>[x,x.replace(/-$/,"")]))
+  }
+
+  let before=m[1],inside=m[2].trim(),after=m[3];
+  if(inside==="..."||NOTE_WORDS.has(inside.toLowerCase()))
+    return uniq(expandOptional(before+after));
+
+  let variants=[before+after];
+
+  // Past/irregular form in English book notation: "to freeze (froze)".
+  let standaloneInflection=/^to\s+/i.test(before.trim()) && !after.trim() && inside && !PREP_WORDS.has(inside.toLowerCase());
+  if(standaloneInflection)variants.push(inside);
+
+  // Contraction shown as an alternative: "there is (there's)".
+  let standaloneContraction=!after.trim() && inside.includes("'");
+  if(standaloneContraction)variants.push(inside);
+
+  if(standaloneInflection||standaloneContraction){
+    return uniq(variants.flatMap(x=>expandOptional(x)))
+  }else if(inside.includes("/") && inside.split("/").every(x=>x.startsWith("-"))){
+    for(const suffix of inside.split("/"))variants.push(before+suffix.slice(1)+after)
+  }else if(inside.endsWith("-")){
+    variants.push(before+inside.slice(0,-1)+after.replace(/^-?/,""))
+  }else if(before.endsWith("-")){
+    variants.push(before.slice(0,-1)+inside+after)
+  }else{
+    variants.push(before+inside+after)
+  }
+
+  // A one-word synonym/plural in brackets may itself be a listed valid form.
+  if(!after.trim() && before.trim().split(/\s+/).length===1 &&
+     inside && !PREP_WORDS.has(inside.toLowerCase()) && !NOTE_WORDS.has(inside.toLowerCase()) &&
+     !inside.includes("-") && !inside.includes("/")){
+    variants.push(inside)
+  }
+
+  return uniq(variants.flatMap(x=>expandOptional(x)))
+}
+
+function splitTop(s){
+  let out=[];
+  (s||"").split(/\s*;\s*/).forEach(p=>{
+    if(/\s+\/\s+/.test(p))out.push(...p.split(/\s+\/\s+/));
+    else out.push(p)
+  });
+  return out
+}
+function englishVariants(raw){
+  let out=[];
+  splitTop(raw).forEach(p=>expandOptional(p).forEach(x=>{
+    out.push(x);
+    let n=norm(x);
+    if(/^to\s+/.test(n))out.push(n.replace(/^to\s+/,""))
+  }));
+  return uniq(out.flatMap(x=>[x,x.replace(/-$/,"")]))
+}
+function germanVariants(raw){
+  let out=[];
+  splitTop(raw).forEach(p=>p.split(/\s*,\s*/).forEach(piece=>{
+    if(BOOK_EXTRAS[piece])out.push(...BOOK_EXTRAS[piece]);
+    else expandOptional(piece).forEach(x=>out.push(x))
+  }));
+  return uniq(out.map(x=>x.replace(/^hier\s*:\s*/,"").replace(/-$/,"")))
+}
+function deStem(s){s=norm(s).replace(/\b(der|die|das|ein|eine|einen|einem|einer|zu)\b/g,"").trim();if(s.length<5)return s;return s.replace(/(etest|test|est|ern|em|en|er|es|e|st|t)$/,"")}function lev(a,b){let m=Array.from({length:a.length+1},(_,i)=>[i]);for(let j=1;j<=b.length;j++)m[0][j]=j;for(let i=1;i<=a.length;i++)for(let j=1;j<=b.length;j++)m[i][j]=Math.min(m[i-1][j]+1,m[i][j-1]+1,m[i-1][j-1]+(a[i-1]===b[j-1]?0:1));return m[a.length][b.length]}function close(a,b){let d=lev(a,b),L=Math.max(a.length,b.length);return(L>=5&&d===1)||(L>=9&&d===2)}function evaluate(ans,v,dir){
+  let a=norm(ans);if(!a)return{kind:"bad"};
+  if(dir==="de"){
+    let c=englishVariants(v.en),aa=a.replace(/^to\s+/,""),ac=compact(aa);
+    if(c.some(x=>{
+      let xx=norm(x).replace(/^to\s+/,"");
+      return xx===aa||compact(xx)===ac
+    }))return{kind:"ok"};
+    if(c.some(x=>close(aa,norm(x).replace(/^to\s+/,""))))return{kind:"near"};
+    return{kind:"bad"}
+  }else{
+    let c=germanVariants(v.de),ac=compact(a);
+    if(c.some(x=>norm(x)===a||compact(x)===ac||deStem(x)===deStem(a)))return{kind:"ok"};
+    if(c.some(x=>close(a,norm(x))))return{kind:"near"};
+    return{kind:"bad"}
+  }
+}
+
+function completeQuestionPhase(){
+  document.getElementById("checkBtn").style.display="none";
+  document.getElementById("nextBtn").style.display="none";
+  document.getElementById("answer").disabled=true;
+  if(session.errorCount===0){
+    session.finished=true;battle.finished=true;
+    if(session.unit){
+      let u=session.unit;rpg.perfectRuns[u]=(rpg.perfectRuns[u]||0)+1;saveRpg();
+      return showPerfectResult(u)
+    }
+    return showResult("🐉 Perfekte Trainingsrunde!",`<div class="dragonCelebrate">🐉</div><p>Kein einziger Fehler – stark gespielt!</p><div>🔥 Beste Serie: <b>${session.bestStreak}</b></div>`,{kind:"perfect"})
+  }
+  spawnShadowElite()
+}
+function shadowEliteData(errors,u){
+  if(errors===1)return{name:"Schattenkobold",emoji:"👺",severity:1,hp:5+u,damage:1};
+  if(errors<=3)return{name:errors===2?"Schattenkrieger":"Schattenritter",emoji:errors===2?"👹":"💀",severity:errors,hp:8+u*2+errors*2,damage:1};
+  return{name:"Wortdämon",emoji:"😈",severity:Math.min(5,errors),hp:12+u*2+errors*3,damage:2}
+}
+function shadowRecommendedPower(){
+  return Math.round((battle.maxHp*4)+(battle.attackDamage*18)+(battle.unit*4))
+}
+function spawnShadowElite(){
+  session.phase="shadowElite";session.battleIdx=0;session.eliteAsked=0;
+  let u=session.unit||((session.errorWords[0]||{}).unit)||1,d=shadowEliteData(session.errorCount,u);
+  battle={unit:u,type:"shadowElite",hp:d.hp,maxHp:d.hp,name:d.name,emoji:d.emoji,shieldUsed:false,finished:false,attackDamage:d.damage,severity:d.severity,charged:false};
+  let arena=document.getElementById("battleArena"),enemy=document.getElementById("enemyF");
+  arena.classList.add("shadowArrival");enemy.classList.add("shadowSpawn");
+  document.getElementById("battleMessage").innerHTML=`🌑 <b>${session.errorCount} Fehler</b> haben ${d.name} gerufen!`;
+  renderBattle();
+  setTimeout(()=>{arena.classList.remove("shadowArrival");enemy.classList.remove("shadowSpawn");nextQuestion()},900)
+}
+function showPerfectResult(u){
+  let n=rpg.perfectRuns[u]||1,w=world(u);
+  showResult("🐉 PERFEKTE RUNDE!",`
+    <div class="fireworks"><span>✨</span><span>🎆</span><span>✦</span><span>🎇</span><span>✨</span></div>
+    <div class="dragonCelebrate">🐉</div>
+    <p><b>„Fantastisch! Kein einziges Wort konnte dich aufhalten!“</b></p>
+    <div class="medalBig">🏅</div>
+    <div class="rewardLine">${w.e} ${w.n} · Perfekte Runde ${n}</div>
+    <p>Diese Medaille bleibt dauerhaft auf deiner Unit sichtbar.</p>
+    <div>🔥 Beste Serie: <b>${session.bestStreak}</b></div>
+  `,{kind:"perfect",button:"Zur Weltkarte"})
+}
+function handleDefeat(){
+  if(!session||session.finished)return;
+  session.finished=true;battle.finished=true;
+  let shadow=session.phase==="shadowElite";
+  if(shadow&&session.unit){
+    rpg.shadowLosses[session.unit]=(rpg.shadowLosses[session.unit]||0)+1
+  }
+  saveRpg();
+  let power=combatPower(),recommended=shadow?shadowRecommendedPower():Math.round(30+battle.unit*6),
+      close=battle.hp<=Math.ceil(battle.maxHp*.3),
+      title=shadow?"💀 Der Elite war diesmal noch zu stark":"💀 Der Held wurde besiegt";
+  let msg=shadow
+    ? `${close?"Du warst ganz knapp dran!":"Der Schatten-Elite hat diese Runde gewonnen."} Beim nächsten Versuch kennst du seine Wörter schon besser.`
+    : `Heute war der Weg noch etwas zu gefährlich. Dein Lernfortschritt und dein Gold bleiben erhalten.`;
+  let tip=power<recommended
+    ? `⚔️ Deine Kampfkraft: <b>${power}</b> · empfohlen etwa <b>${recommended}</b>.<br>Lerne weiter, sammle Gold und hol dir eine stärkere Waffe oder mehr Herzen.`
+    : `📚 Trainiere besonders die schwierigen Wörter – beim nächsten Kampf hast du bessere Chancen.`;
+  showResult(title,`<p>${msg}</p><div class="defeatTip">${tip}</div><p><b>Wichtig:</b> Gelerntes, Gold und bereits verdiente XP bleiben erhalten.</p>`,{kind:"defeat",shop:true,button:"Zur Weltkarte"})
+}
+function checkAnswer(){
+  if(!current||!session||session.finished)return;
+  let inp=document.getElementById("answer"),ans=inp.value,ev=evaluate(ans,current,current.dir),
+      s=wstate(current.id),fb=document.getElementById("feedback"),
+      target=current.dir==="de"?current.en:current.de,wasSafe=skillState(current).safe;
+
+  if(ev.kind==="ok"){
+    session.streak++;session.bestStreak=Math.max(session.bestStreak||0,session.streak);state.score+=10;
+    let coinParts=[];
+    if(current.dir==="de"){
+      s.de.r++;s.sp.r++;s.correctSinceError=Math.min(2,(s.correctSinceError||0)+1);
+      if(!rpg.coinFirstWords.includes(current.id)&&!rpg.coinWords.includes(current.id)){
+        rpg.coinFirstWords.push(current.id);rpg.coins+=2;session.coins+=2;
+        coinParts.push(`<span class="goldCoin"></span> +2 Gold – erster richtiger Abruf`)
+      }
+    }else s.ed.r++;
+
+    let nowSafe=skillState(current).safe;
+    if(!wasSafe&&nowSafe&&!rpg.coinWords.includes(current.id)){
+      rpg.coinWords.push(current.id);if(!rpg.coinFirstWords.includes(current.id))rpg.coinFirstWords.push(current.id);
+      rpg.coins+=3;session.coins+=3;coinParts.push(`<span class="goldCoin"></span> +3 Gold – Wort fixiert!`)
+    }
+
+    autoAttack();
+    if(battle.charged&&session.phase==="shadowElite"){
+      battle.charged=false;document.getElementById("battleMessage").textContent="⚔️ Schattenfeuer unterbrochen!"
+    }
+    let cheers=["🎉 Perfekt!","🚀 Genau richtig!","🌟 Stark!","🥳 Volltreffer!","🏆 Super!"];
+    fb.className="feedback ok";fb.innerHTML=`<b>${cheers[Math.floor(Math.random()*cheers.length)]}</b><br>Richtig: <strong>${esc(ans.trim())}</strong>${coinParts.length?`<br><b>${coinParts.join("<br>")}</b>`:""}`
+  }else{
+    session.streak=0;
+    if(session.phase==="questions"){
+      session.errorCount++;
+      if(!session.errorWords.some(x=>x.id===current.id))session.errorWords.push(current)
+    }else if(session.phase==="shadowElite")session.eliteErrors++;
+    monsterAttack();
+    if(current.dir==="de"){s.de.w++;s.sp.w++;s.correctSinceError=0}else s.ed.w++;
+    fb.className=ev.kind==="near"?"feedback near":"feedback bad";
+    fb.innerHTML=ev.kind==="near"
+      ?`<b>✏️ Fast richtig!</b><br>Schreibweise noch nicht ganz korrekt.<br>Richtig: <strong>${esc(target)}</strong>${session.phase==="questions"?"<br>🌑 Dieses Wort stärkt den Schatten-Elite am Rundenende.":""}`
+      :`<b>🧐 Noch nicht.</b><br>${current.dir==="de"?"Gesucht ist die englische Buchvokabel.":"Die Bedeutung passt noch nicht."}<br>Richtig: <strong>${esc(target)}</strong>${current.example?`<br><small>${esc(current.example)}</small>`:""}${session.phase==="questions"?"<br>🌑 Dieses Wort kommt im Elite-Endkampf wieder.":""}`
+  }
+
+  s.last=Date.now();save();saveRpg();
+  document.getElementById("streak").textContent=session.streak;inp.disabled=true;
+  document.getElementById("checkBtn").style.display="none";
+  document.getElementById("nextBtn").style.display=session.finished?"none":"block";
+  renderBattle()
+}
+function autoAttack(){
+  if(!battle||battle.finished)return;
+  let s=session?session.streak:0,c=companion(),sp=currentSpecial(),dmg=baseDamage(),fx=weapon().fx,label="⚔️ Treffer";
+  if(s>0&&s%10===0){dmg=baseDamage()+6+rpg.specialLevel*2+sp.bonus;fx="🌟";label="🌟 ULTIMATE"}
+  else if(s>0&&s%5===0){dmg=baseDamage()+3+rpg.specialLevel+sp.bonus;fx=sp.fx;label=`✨ ${sp.n}`}
+  else if(s>0&&s%3===0){dmg=baseDamage()+2+Math.ceil(rpg.specialLevel/2)+sp.bonus;fx=sp.fx;label=`💥 ${sp.n}`}
+  if(battle.charged&&session&&session.phase==="shadowElite"){dmg+=1;label="⚔️ Schattenfeuer unterbrochen";fx="💥"}
+  if(c&&c.id==="c2"&&s>0&&s%4===0)dmg+=1;
+  if(c&&c.id==="c5"&&label!=="⚔️ Treffer")dmg+=1;
+  if(c&&c.id==="c14"&&label!=="⚔️ Treffer")dmg+=2;
+  doDamage(dmg,fx,label!=="⚔️ Treffer",label)
+}
+function doDamage(dmg,fx,special,label){battle.hp-=dmg;animateAttack(fx,special);document.getElementById("battleMessage").textContent=`${label||(special?"✨ Spezial":"⚔️ Treffer")}: ${dmg} Schaden!`;if(battle.hp<=0)enemyDefeated();renderBattle()}
+function animateAttack(fx,special){let el=document.getElementById("attackFx"),hero=document.getElementById("heroF"),enemy=document.getElementById("enemyF");el.textContent=fx;el.classList.remove("go");void el.offsetWidth;el.classList.add("go");hero.classList.remove("heroAttack");enemy.classList.remove("enemyHit");void hero.offsetWidth;hero.classList.add("heroAttack");enemy.classList.add("enemyHit")}
+function monsterAttack(){
+  let c=companion();
+  if(c&&c.id==="c11"&&!battle.shieldUsed){
+    battle.shieldUsed=true;document.getElementById("battleMessage").textContent="👻 Schutzgeist blockt den Treffer!";return
+  }
+  let dmg=battle.attackDamage||1;
+  if(battle.type==="shadowElite"&&battle.charged)dmg+=1;
+  rpg.hp=Math.max(0,rpg.hp-dmg);
+  document.getElementById("battleMessage").textContent=`👾 ${battle.name} trifft – ${dmg} Herz${dmg>1?"en":""} verloren.`;
+  renderBattle();
+  if(rpg.hp<=0)setTimeout(handleDefeat,350)
+}
+function awardXp(n){let old=rpg.level;rpg.xp+=n;rpg.level=levelForXp(rpg.xp);if(rpg.level>old){rpg.hp=rpg.maxHp;showToast(`⬆️ Level ${rpg.level}!`)}return rpg.level>old}function dropLoot(type,u){let c=companion(),cr=0,se=0,co=0;if(type==="normal"&&(Math.random()<.28+(c&&c.id==="c8"?.18:0)))cr=1;if(type==="elite"){cr=2;se=1}if(type==="boss"){cr=3;se=1;co=1}rpg.crystals+=cr;rpg.seals+=se;rpg.cores+=co;return{cr,se,co}}
+function enemyDefeated(){
+  let type=battle.type,u=battle.unit,
+      xp=type==="boss"?180+u*10:type==="elite"?80+u*5:type==="shadowElite"?45+u*4+session.errorCount*10:25+u*3,
+      loot=type==="shadowElite"?{cr:session.errorCount>=2?1:0,se:session.errorCount>=4?1:0,co:0}:dropLoot(type,u);
+
+  if(type==="shadowElite"){rpg.crystals+=loot.cr;rpg.seals+=loot.se}
+  awardXp(xp);session.kills++;
+  document.getElementById("battleMessage").textContent=`💥 ${battle.name} besiegt! +${xp} XP`;
+
+  if(type==="shadowElite"){
+    if(session.unit)rpg.shadowWins[session.unit]=(rpg.shadowWins[session.unit]||0)+1;
+    battle.finished=true;session.finished=true;
+    let close=rpg.hp===1,title=close?"🏆 KNAPPER SIEG!":"⚔️ Schatten-Elite besiegt!";
+    session.victory={title,xp,loot,shadow:true};
+    saveRpg();setTimeout(()=>finishQuiz(true),500)
+  }else if(type==="elite"){
+    if(!rpg.elites.includes(u))rpg.elites.push(u);battle.finished=true;session.finished=true;
+    session.victory={title:"⚔️ Unit-Elite besiegt!",xp,loot};saveRpg();setTimeout(()=>finishQuiz(true),500)
+  }else if(type==="boss"){
+    if(!rpg.bosses.includes(u))rpg.bosses.push(u);battle.finished=true;session.finished=true;
+    session.victory={title:"👑 Boss besiegt!",xp,loot};saveRpg();setTimeout(()=>finishQuiz(true),500)
+  }else{
+    let hp=6+u*2;battle={...battle,hp,maxHp:hp,name:regularEnemy(u),emoji:regularEmoji(u),shieldUsed:false,charged:false};session.victory=null;saveRpg()
+  }
+}
+function finishQuiz(done){
+  if(!session){goHome();return}
+  if(!done){session=null;current=null;goHome();return}
+  if(session.victory){
+    let l=session.victory.loot||{},body=`<div class="rewardLine"><span class="goldCoin"></span>${session.coins} Gold neu gelernt</div>
+      <div>👾 ${session.kills} Gegner besiegt · 🔥 Beste Serie ${session.bestStreak||session.streak}</div>
+      <div style="margin-top:8px">Belohnung: +${session.victory.xp} XP ${l.cr?`· 💎 ${l.cr}`:""} ${l.se?`· 🛡️ ${l.se}`:""} ${l.co?`· 🔥 ${l.co}`:""}</div>`;
+    if(session.victory.shadow)body+=`<p><b>Deine Fehlerwörter haben dich stärker gemacht.</b> Du hast den Schatten-Elite bezwungen!</p>`;
+    return showResult(session.victory.title,body,{button:"Zur Weltkarte"})
+  }
+  showResult("🏕️ Runde geschafft!",`<div class="rewardLine"><span class="goldCoin"></span>${session.coins} Gold neu gelernt</div><div>👾 ${session.kills} Gegner besiegt · 🔥 Beste Serie ${session.bestStreak||session.streak}</div>`,{button:"Zur Weltkarte"})
+}
+function showResult(t,b,opts={}){
+  let ov=document.getElementById("resultOverlay"),card=document.getElementById("resultCard"),cont=document.getElementById("resultContinue"),shop=document.getElementById("resultShop");
+  document.getElementById("resultTitle").textContent=t;document.getElementById("resultBody").innerHTML=b;
+  ov.className="overlay show"+(opts.kind?` ${opts.kind}`:"");card.className="result"+(opts.kind?` ${opts.kind}`:"");
+  cont.textContent=opts.button||"Weiter";shop.style.display=opts.shop?"inline-block":"none"
+}function closeResult(){
+  let ov=document.getElementById("resultOverlay");ov.className="overlay";
+  session=null;current=null;goHome()
+}function openShopFromResult(){
+  let u=(session&&session.unit)||shopUnit||1;
+  document.getElementById("resultOverlay").className="overlay";
+  session=null;current=null;showShop(u)
+}
+function showToast(t){let m=document.getElementById("battleMessage");if(m)m.textContent=t}
+function esc(s){let d=document.createElement("div");d.textContent=s;return d.innerHTML}document.addEventListener("keydown",e=>{
+  if(e.key!=="Enter")return;
+  let overlay=document.getElementById("resultOverlay");
+  if(overlay&&overlay.classList.contains("show")){
+    e.preventDefault();closeResult();return
+  }
+  if(!document.getElementById("quiz").classList.contains("on"))return;
+  e.preventDefault();
+  let n=document.getElementById("nextBtn");
+  if(n.style.display!=="none")nextQuestion();
+  else if(!document.getElementById("answer").disabled)checkAnswer()
+})
+function shopItems(u){
+  let arr=[],w=WEAPONS.find(x=>x.u===u);
+  if(w)arr.push({...w,type:"weapon",desc:`⚔️ +${w.d} Waffenschaden · ${w.d*10} Waffenstärke`});
+  let a=AURAS.find(x=>x.u===u);
+  if(a)arr.push({...a,type:"aura",desc:"✨ +2 Kampfkraft · Helden-Aura"});
+  let s=SPECIALS.find(x=>x.u===u);
+  if(s)arr.push({...s,id:"s"+u,type:"special",desc:`💥 +${s.bonus} Spezialschaden · stärkere Serienattacken`});
+  let c=COMPANIONS.find(x=>x.u===u);
+  if(c)arr.push({...c,type:"companion"});
+  let h=HEARTS.find(x=>x.u===u);
+  if(h)arr.push({...h,type:"heart",desc:"❤️ +1 maximales Herz · +4 Kampfkraft"});
+  return arr
+}function itemOwned(x){if(x.type==="special")return rpg.specialLevel>=SPECIALS.findIndex(s=>s.u===x.u)+1;return rpg.inventory.includes(x.id)}function materialReq(x){
+  if(x.type==="aura"||x.u<7)return {crystals:0,seals:0};
+  let crystals=0,seals=0;
+  if(x.type==="weapon"||x.type==="special"||x.type==="companion")crystals=Math.max(1,Math.floor((x.u-5)/3));
+  if(x.type==="heart"&&x.u>=10)crystals=1;
+  if((x.type==="weapon"||x.type==="special")&&x.u>=12)seals=1;
+  return {crystals,seals}
+}
+function firstEnglishWins(u){
+  return VOCAB.filter(v=>v.unit===u&&rpg.coinFirstWords.includes(v.id)).length
+}
+function effectivePct(x){
+  if(x.type==="aura")return 0;
+  if(x.type==="weapon")return 0; // weapon uses first-English-success gate instead
+  if(x.type==="special")return Math.min(40,22+Math.floor(x.u/2));
+  if(x.type==="companion")return Math.min(42,25+Math.floor(x.u/2));
+  if(x.type==="heart")return Math.min(48,32+Math.floor(x.u/2));
+  return x.pct||0
+}
+function knowledgeReqFor(x){
+  if(x.type==="aura")return 0;
+  let prev=VOCAB.filter(v=>v.unit<x.u).length;
+  if(x.type==="weapon"){
+    if(x.u<=5)return 0;
+    return Math.floor(prev*(x.u<=10?.15:.30))
+  }
+  if(x.type==="special"){
+    if(x.u<=6)return 0;
+    return Math.floor(prev*(x.u<=10?.22:.36))
+  }
+  if(x.type==="companion"||x.type==="heart"){
+    if(x.u<=6)return 0;
+    return Math.floor(prev*(x.u<=10?.18:.30))
+  }
+  return 0
+}
+
+function itemGate(x){
+  let p=unitProgress(x.u),k=knowledgeReqFor(x),m=materialReq(x),
+      specialIndex=x.type==="special"?SPECIALS.findIndex(s=>s.u===x.u):-1,
+      previousSpecial=specialIndex<=0||rpg.specialLevel>=specialIndex,
+      firstWin=x.type!=="weapon"||firstEnglishWins(x.u)>=1,
+      needPct=effectivePct(x);
+  return{
+    active:state.activeUnits.includes(x.u),
+    progress:p.pct>=needPct,
+    firstWin,
+    needPct,
+    knowledge:totalSafe()>=k,
+    coins:rpg.coins>=x.p,
+    crystals:rpg.crystals>=m.crystals,
+    seals:rpg.seals>=m.seals,
+    previousSpecial,k,m
+  }
+}
+function showShop(u){shopUnit=u||shopUnit||Math.max(1,...state.activeUnits);renderShop();screens("shop")}
+function renderShop(){
+  document.getElementById("shopCoins").innerHTML=`<span class="goldCoin"></span>${rpg.coins} Gold`;
+  document.getElementById("shopMats").textContent=`💎 ${rpg.crystals} · 🛡️ ${rpg.seals} · 🔥 ${rpg.cores}`;
+  let tabs=document.getElementById("shopTabs");tabs.innerHTML="";
+  for(let u=1;u<=15;u++){
+    let b=document.createElement("button");b.className="unitTab "+(u===shopUnit?"sel":"");
+    b.textContent=`${world(u).e} ${u}`;b.onclick=()=>{shopUnit=u;renderShop()};tabs.appendChild(b)
+  }
+  let g=document.getElementById("shopGrid");g.innerHTML="";
+  for(const x of shopItems(shopUnit)){
+    let gate=itemGate(x),owned=itemOwned(x),req=[];
+    if(!gate.active)req.push("Unit noch nicht aktiv");
+    if(x.type==="weapon"&&!gate.firstWin)req.push("1 richtige Englisch-Antwort");
+    if(x.type!=="weapon"&&!gate.progress&&gate.needPct>0)req.push(`${gate.needPct}% Unit-Fortschritt`);
+    if(!gate.knowledge&&gate.k)req.push(`${gate.k} Wörter insgesamt sicher`);
+    if(!gate.previousSpecial)req.push("vorheriges Spezial-Upgrade");
+    let mr=materialReq(x);
+    if(mr.crystals)req.push(`💎 ${mr.crystals}`);
+    if(mr.seals)req.push(`🛡️ ${mr.seals}`);
+    let can=gate.active&&gate.progress&&gate.firstWin&&gate.knowledge&&gate.coins&&gate.crystals&&gate.seals&&gate.previousSpecial&&!owned,
+        d=document.createElement("div");
+    d.className="shopItem";
+    d.innerHTML=`<div><div class="shopIcon">${x.i}</div><h3>${x.n}</h3><p>${x.desc||""}</p><div class="req">${req.length?"🔒 "+req.join(" · "):"✅ freigeschaltet"}</div></div><button class="buy ${owned?"owned":""}" ${owned||!can?"disabled":""}>${owned?"✓ Besitz":`🪙 ${x.p} kaufen`}</button>`;
+    if(owned&&(x.type==="weapon"||x.type==="companion"||x.type==="aura")){
+      let b=d.querySelector("button");b.disabled=false;b.textContent=isEquipped(x)?"✓ Ausgerüstet":"Ausrüsten";b.onclick=()=>equipItem(x)
+    }else if(can)d.querySelector("button").onclick=()=>buyItem(x);
+    g.appendChild(d)
+  }
+}
+function isEquipped(x){return x.type==="weapon"?rpg.equippedWeapon===x.id:x.type==="companion"?rpg.equippedCompanion===x.id:rpg.equippedAura===x.id}function buyItem(x){let gate=itemGate(x),mr=materialReq(x);if(!(gate.active&&gate.progress&&gate.firstWin&&gate.knowledge&&gate.coins&&gate.crystals&&gate.seals&&gate.previousSpecial))return;rpg.coins-=x.p;rpg.crystals-=mr.crystals;rpg.seals-=mr.seals;if(x.type==="special")rpg.specialLevel=Math.max(rpg.specialLevel,SPECIALS.findIndex(s=>s.u===x.u)+1);else{rpg.inventory.push(x.id);if(x.type==="heart")rpg.maxHp++;if(x.type==="weapon")rpg.equippedWeapon=x.id;if(x.type==="companion")rpg.equippedCompanion=x.id;if(x.type==="aura")rpg.equippedAura=x.id}saveRpg();renderShop();renderUnits()}function equipItem(x){if(x.type==="weapon")rpg.equippedWeapon=x.id;if(x.type==="companion")rpg.equippedCompanion=x.id;if(x.type==="aura")rpg.equippedAura=x.id;saveRpg();renderShop()}
+function showBossRequirements(u){let p=unitProgress(u),lines=[`${p.pct===100?"✅":"❌"} 100% Wörter sicher`,`${rpg.elites.includes(u)?"✅":"❌"} Elite besiegt`,`${boughtInUnit(u)?"✅":"❌"} mindestens 1 Shop-Upgrade aus Unit ${u}`,`${combatPower()>=bossPowerReq(u)?"✅":"❌"} Kampfkraft ${bossPowerReq(u)} (du: ${combatPower()})`];alert(`Boss-Tor Unit ${u}\n\n`+lines.join("\n"))}
+function showProgress(){
+  let e=document.getElementById("progressContent");e.innerHTML="";
+  for(let u=1;u<=15;u++){
+    let p=unitProgress(u),w=world(u),med=(rpg.perfectRuns&&rpg.perfectRuns[u])||0,d=document.createElement("div");d.className="panel";
+    d.innerHTML=`<div class="row"><div><b>${w.e} ${w.n} · Unit ${u}</b><div class="note">${p.safe}/${p.total} Wörter sicher · 🏅 ${med} perfekte Runde${med===1?"":"n"}</div></div><div>${p.mastered?"🏆 Boss besiegt":eliteReady(u)?"⚔️ Unit-Elite bereit":bossReady(u)?"👑 Boss bereit":p.pct+"%"}</div></div><div class="unitBar"><i style="width:${p.pct}%"></i></div><div class="note" style="margin-top:7px">Unit-Elite ab 60% · Boss: 100% + Unit-Elite + Shop-Upgrade + ⚔️ ${bossPowerReq(u)}</div>`;
+    e.appendChild(d)
+  }
+  screens("progress")
+}
+function showAdmin(){let e=document.getElementById("adminContent");e.innerHTML="";for(let u=1;u<=15;u++){let on=state.activeUnits.includes(u),r=document.createElement("div");r.className="row";r.innerHTML=`<div><b>${world(u).e} ${world(u).n} · Unit ${u}</b><div class="note">${VOCAB.filter(v=>v.unit===u).length} Vokabeln</div></div><button class="buy">${on?"Aktiv":"Inaktiv"}</button>`;r.querySelector("button").onclick=()=>toggleUnit(u,on);e.appendChild(r)}screens("admin")}function toggleUnit(u,on){if(on){if(!confirm(`Unit ${u} deaktivieren? Fortschritt bleibt erhalten.`))return;state.activeUnits=state.activeUnits.filter(x=>x!==u)}else state.activeUnits.push(u);state.activeUnits=[...new Set(state.activeUnits)].sort((a,b)=>a-b);save();showAdmin();renderUnits()}function resetAll(){if(!confirm("Wirklich ALLES zurücksetzen?"))return;state=fresh();localStorage.setItem(KEY,JSON.stringify(state));rpg=defaultRpg();localStorage.setItem(RPG_KEY,JSON.stringify(rpg));goHome()}
+migrateCoins();refreshTop();renderUnits();goHome();
+</script></body></html>
